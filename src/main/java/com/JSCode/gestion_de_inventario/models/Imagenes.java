@@ -1,5 +1,7 @@
 package com.JSCode.gestion_de_inventario.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ public class Imagenes {
 
     @ManyToOne
     @JoinColumn (name = "producto_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
     private Productos producto;
 
     @Column(nullable = false)

@@ -3,6 +3,7 @@ package com.JSCode.gestion_de_inventario.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +29,7 @@ public class Categoria {
     @Column(name = "nombre_categoria", nullable = false, unique = true)
     private String nombreCategoria;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "categoria")
     private List<Productos> productos = new ArrayList<>();
 
