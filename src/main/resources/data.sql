@@ -1,12 +1,16 @@
 /*Esto permite insertar datos de prueba, cuando los tengan, pueden comentar el codigo*/
 /* Los truncate son para reiniciar los IDS de las tablas, por si crean datos en la bd y los borran, vuelvan a empezar desde 0 las primary key, 
 mientras tengan datos los dejan comentados*/
+
 /*
 TRUNCATE TABLE productos RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categoria RESTART IDENTITY CASCADE;
 TRUNCATE TABLE imagenes RESTART IDENTITY CASCADE;
 */
 /*
+
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 INSERT INTO categoria (nombre_categoria) VALUES ('Hogar');
 INSERT INTO categoria (nombre_categoria) VALUES ('Ropa');
 INSERT INTO categoria (nombre_categoria) VALUES ('Tecnología');

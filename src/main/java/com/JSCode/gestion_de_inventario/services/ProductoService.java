@@ -2,20 +2,30 @@ package com.JSCode.gestion_de_inventario.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.JSCode.gestion_de_inventario.dto.ProductoResumenDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
+import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
+import com.JSCode.gestion_de_inventario.models.Categoria;
+import com.JSCode.gestion_de_inventario.models.Imagenes;
 import com.JSCode.gestion_de_inventario.models.Productos;
+import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
+
 
 @Service
 public class ProductoService {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     public List<ProductoResumenDTO> filtrarProductos(String nombre, String categoria, BigDecimal precioMin,
             BigDecimal precioMax) {
@@ -70,4 +80,72 @@ public class ProductoService {
                     imagenes);
         }).toList();
     }
+
+    public ProductoDTO actualizarProducto(ProductoDTO productoDTO, Long id) {
+        Productos producto = productoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+    
+        if (productoDTO.getNombre() != null) {
+            producto.setNombre(productoDTO.getNombre());
+        }
+        if (productoDTO.getDescripcion() != null) {
+            producto.setDescripcion(productoDTO.getDescripcion());
+        }
+        if (productoDTO.getCantidadDisponible() != null) {
+            producto.setCantidadDisponible(productoDTO.getCantidadDisponible());
+        }
+        if (productoDTO.getPrecioCompra() != null) {
+            producto.setPrecioCompra(productoDTO.getPrecioCompra());
+        }
+        if (productoDTO.getStockMinimo() != null) {
+            producto.setStockMinimo(productoDTO.getStockMinimo());
+        }
+        if (productoDTO.getPalabrasClave() != null) {
+            producto.setPalabrasClave(productoDTO.getPalabrasClave());
+        }
+    
+        if (productoDTO.getCategoriaId() != null) {
+            Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
+            producto.setCategoria(categoria);
+        }
+    
+        if (productoDTO.getNewImages() != null) {
+            List<String> imagenesExistentes = producto.getImagenes().stream()
+                .map(Imagenes::getImageUrl)
+                .collect(Collectors.toList());
+    
+            for (String url : productoDTO.getNewImages()) {
+                if (!imagenesExistentes.contains(url)) {
+                    Imagenes nuevaImagen = new Imagenes();
+                    nuevaImagen.setImageUrl(url);
+                    nuevaImagen.setProducto(producto);
+                    producto.getImagenes().add(nuevaImagen);
+                }
+            }
+        }
+    
+        if (productoDTO.getDeletedImages() != null) {
+            producto.getImagenes().removeIf(imagen -> productoDTO.getDeletedImages().contains(imagen.getImageUrl()));
+        }
+    
+        Productos productoGuardado = productoRepository.save(producto);
+    
+        ProductoDTO dto = new ProductoDTO();
+        dto.setNombre(productoGuardado.getNombre());
+        dto.setDescripcion(productoGuardado.getDescripcion());
+        dto.setCantidadDisponible(productoGuardado.getCantidadDisponible());
+        dto.setPrecioCompra(productoGuardado.getPrecioCompra());
+        dto.setStockMinimo(productoGuardado.getStockMinimo());
+        dto.setPalabrasClave(productoGuardado.getPalabrasClave());
+        dto.setCategoriaId(productoGuardado.getCategoria().getId());
+    
+        List<String> urlsImagenes = productoGuardado.getImagenes().stream()
+                .map(Imagenes::getImageUrl)
+                .collect(Collectors.toList());
+        dto.setUrlsImagenes(urlsImagenes);
+    
+        return dto;
+    }
+
 }

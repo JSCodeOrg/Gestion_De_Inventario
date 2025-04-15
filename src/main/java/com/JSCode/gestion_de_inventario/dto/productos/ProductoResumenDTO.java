@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.dto;
+package com.JSCode.gestion_de_inventario.dto.productos;
 
 import java.math.BigDecimal;
 import java.util.List;
