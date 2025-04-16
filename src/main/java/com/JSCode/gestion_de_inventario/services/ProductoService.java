@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
@@ -79,6 +80,12 @@ public class ProductoService {
                     producto.getPrecioCompra(),
                     imagenes);
         }).toList();
+    }
+
+    public ApiResponse<String> productoEliminar(Long id){
+        productoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        productoRepository.deleteById(id);
+            return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
     }
 
     public ProductoDTO actualizarProducto(ProductoDTO productoDTO, Long id) {

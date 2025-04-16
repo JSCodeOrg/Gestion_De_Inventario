@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -52,5 +53,12 @@ public class ProductosController {
 
     }
 
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<ApiResponse<ApiResponse<String>>> eliminarProducto(@PathVariable Long id) {
+        ApiResponse<String> productoEliminar = productoService.productoEliminar(id);
+
+        return ResponseEntity.ok(new ApiResponse<>(null, productoEliminar, false, 200));
+
+    }
 
 }
