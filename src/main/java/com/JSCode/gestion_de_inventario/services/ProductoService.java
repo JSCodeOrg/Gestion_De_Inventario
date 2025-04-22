@@ -155,4 +155,12 @@ public class ProductoService {
         return dto;
     }
 
+    public ApiResponse<String> agregarUnidadesProducto(Long id, int cantidad) {
+        Productos producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        int nuevaCantidad = producto.getCantidadDisponible() + cantidad;
+        producto.setCantidadDisponible(nuevaCantidad);
+        productoRepository.save(producto);
+        return new ApiResponse<>("Unidades agregadas con éxito", false, 200);
+    }
 }
