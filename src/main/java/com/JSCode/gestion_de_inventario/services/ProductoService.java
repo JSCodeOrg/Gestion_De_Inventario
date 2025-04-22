@@ -157,11 +157,32 @@ public class ProductoService {
     }
 
     public ApiResponse<String> agregarUnidadesProducto(Long id, AgregarCantidadDTO cantidadDTO) {
+
         Productos producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         int nuevaCantidad = producto.getCantidadDisponible() + cantidadDTO.getCantidad();
         producto.setCantidadDisponible(nuevaCantidad);
         productoRepository.save(producto);
         return new ApiResponse<>("Unidades agregadas con éxito", false, 200);
+    }
+
+    public ProductoDTO verProducto(Long id) {
+        Productos producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        ProductoDTO dto = new ProductoDTO();
+        dto.setNombre(producto.getNombre());
+        dto.setDescripcion(producto.getDescripcion());
+        dto.setCantidadDisponible(producto.getCantidadDisponible());
+        dto.setPrecioCompra(producto.getPrecioCompra());
+        dto.setStockMinimo(producto.getStockMinimo());
+        dto.setPalabrasClave(producto.getPalabrasClave());
+        dto.setCategoriaId(producto.getCategoria().getId());
+
+        List<String> urlsImagenes = producto.getImagenes().stream()
+                .map(Imagenes::getImageUrl)
+                .collect(Collectors.toList());
+        dto.setUrlsImagenes(urlsImagenes);
+
+        return dto;
     }
 }

@@ -67,4 +67,9 @@ public class ProductosController {
         productoService.agregarUnidadesProducto(id, cantidadDTO);
         return ResponseEntity.ok(new ApiResponse<>("Producto agregado con éxito", false, 200));
          }
+    @GetMapping("/ver/{id}")
+    public ResponseEntity<ApiResponse<ProductoDTO>> verProducto(@PathVariable Long id) {
+        ProductoDTO producto = productoService.verProducto(id);
+        return ResponseEntity.ok(new ApiResponse<>("Producto encontrado con éxito", producto, false, 200));   
+    }  
 }
