@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
@@ -155,10 +156,10 @@ public class ProductoService {
         return dto;
     }
 
-    public ApiResponse<String> agregarUnidadesProducto(Long id, int cantidad) {
+    public ApiResponse<String> agregarUnidadesProducto(Long id, AgregarCantidadDTO cantidadDTO) {
         Productos producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
-        int nuevaCantidad = producto.getCantidadDisponible() + cantidad;
+        int nuevaCantidad = producto.getCantidadDisponible() + cantidadDTO.getCantidad();
         producto.setCantidadDisponible(nuevaCantidad);
         productoRepository.save(producto);
         return new ApiResponse<>("Unidades agregadas con éxito", false, 200);

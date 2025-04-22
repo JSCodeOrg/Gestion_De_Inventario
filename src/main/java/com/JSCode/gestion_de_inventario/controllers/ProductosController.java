@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.services.ProductoService;
@@ -62,10 +63,8 @@ public class ProductosController {
 
     }
     @PostMapping("/agregar/{id}")
-    public ResponseEntity<ApiResponse<String>> agregarUnidadesProducto(@PathVariable Long id, 
-            @RequestBody int cantidad) {
-        productoService.agregarUnidadesProducto(id, cantidad);
-
+    public ResponseEntity<ApiResponse<String>> agregarUnidadesProducto(@PathVariable Long id, @RequestBody AgregarCantidadDTO cantidadDTO) {
+        productoService.agregarUnidadesProducto(id, cantidadDTO);
         return ResponseEntity.ok(new ApiResponse<>("Producto agregado con éxito", false, 200));
          }
 }
