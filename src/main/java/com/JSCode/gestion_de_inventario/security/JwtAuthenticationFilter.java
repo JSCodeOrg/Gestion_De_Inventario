@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // TODO: Añadir las rutas públicas aqui
 
-        if (request.getServletPath().equals("/api/productos/obtener/categoria")) {
+        if (request.getServletPath().equals("/api/filtrar")) {
             filterChain.doFilter(request, response);
             return;
         }

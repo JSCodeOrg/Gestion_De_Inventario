@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +57,7 @@ public class ProductosController {
 
     }
 
+    @PreAuthorize("hasRole('administrador')")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ApiResponse<ApiResponse<String>>> eliminarProducto(@PathVariable Long id) {
         ApiResponse<String> productoEliminar = productoService.productoEliminar(id);
@@ -74,6 +76,7 @@ public class ProductosController {
         return ResponseEntity.ok(new ApiResponse<>("Producto encontrado con éxito", producto, false, 200));   
     }  
 
+    @PreAuthorize("hasRole('administrador')")
     @GetMapping("/obtener/categoria")
     public ResponseEntity<List<ProductoCarruselDTO>> obtenerPorCategoria(@RequestParam Long categoria_id){
         List<ProductoCarruselDTO> productos = this.productoService.obtenerProductosCarrusel(categoria_id);
