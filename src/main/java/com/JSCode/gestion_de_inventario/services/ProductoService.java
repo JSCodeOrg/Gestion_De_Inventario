@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
@@ -18,7 +19,6 @@ import com.JSCode.gestion_de_inventario.models.Imagenes;
 import com.JSCode.gestion_de_inventario.models.Productos;
 import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
-
 
 @Service
 public class ProductoService {
@@ -83,16 +83,17 @@ public class ProductoService {
         }).toList();
     }
 
-    public ApiResponse<String> productoEliminar(Long id){
-        productoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+    public ApiResponse<String> productoEliminar(Long id) {
+        productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         productoRepository.deleteById(id);
-            return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
+        return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
     }
 
     public ProductoDTO actualizarProducto(ProductoDTO productoDTO, Long id) {
         Productos producto = productoRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
-    
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+
         if (productoDTO.getNombre() != null) {
             producto.setNombre(productoDTO.getNombre());
         }
@@ -111,18 +112,19 @@ public class ProductoService {
         if (productoDTO.getPalabrasClave() != null) {
             producto.setPalabrasClave(productoDTO.getPalabrasClave());
         }
-    
+
         if (productoDTO.getCategoriaId() != null) {
             Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
             producto.setCategoria(categoria);
         }
-    
+
         if (productoDTO.getNewImages() != null) {
             List<String> imagenesExistentes = producto.getImagenes().stream()
-                .map(Imagenes::getImageUrl)
-                .collect(Collectors.toList());
-    
+                    .map(Imagenes::getImageUrl)
+                    .collect(Collectors.toList());
+
             for (String url : productoDTO.getNewImages()) {
                 if (!imagenesExistentes.contains(url)) {
                     Imagenes nuevaImagen = new Imagenes();
@@ -132,13 +134,13 @@ public class ProductoService {
                 }
             }
         }
-    
+
         if (productoDTO.getDeletedImages() != null) {
             producto.getImagenes().removeIf(imagen -> productoDTO.getDeletedImages().contains(imagen.getImageUrl()));
         }
-    
+
         Productos productoGuardado = productoRepository.save(producto);
-    
+
         ProductoDTO dto = new ProductoDTO();
         dto.setNombre(productoGuardado.getNombre());
         dto.setDescripcion(productoGuardado.getDescripcion());
@@ -147,12 +149,12 @@ public class ProductoService {
         dto.setStockMinimo(productoGuardado.getStockMinimo());
         dto.setPalabrasClave(productoGuardado.getPalabrasClave());
         dto.setCategoriaId(productoGuardado.getCategoria().getId());
-    
+
         List<String> urlsImagenes = productoGuardado.getImagenes().stream()
                 .map(Imagenes::getImageUrl)
                 .collect(Collectors.toList());
         dto.setUrlsImagenes(urlsImagenes);
-    
+
         return dto;
     }
 
@@ -184,5 +186,31 @@ public class ProductoService {
         dto.setUrlsImagenes(urlsImagenes);
 
         return dto;
+    }
+
+    public List<ProductoCarruselDTO> obtenerProductosCarrusel(Long categoria_id) {
+
+        Categoria categoria = this.categoriaRepository.findById(categoria_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + categoria_id));
+
+        List<Productos> productos = this.productoRepository.findTop15ByCategoriaOrderByIdAsc(categoria);
+
+        return productos.stream()
+                .map(producto -> {
+                    ProductoCarruselDTO dto = new ProductoCarruselDTO();
+                    dto.setProducto_id(producto.getId());
+
+                    if (!producto.getImagenes().isEmpty()) {
+                        dto.setImageUrl(producto.getImagenes().get(0).getImageUrl());
+                    } else {
+                        dto.setImageUrl(null);
+                    }
+
+                    dto.setNombre(producto.getNombre());
+                    dto.setPrecioCompra(producto.getPrecioCompra());
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

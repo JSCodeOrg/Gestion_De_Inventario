@@ -6,9 +6,9 @@ mientras tengan datos los dejan comentados*/
 TRUNCATE TABLE productos RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categoria RESTART IDENTITY CASCADE;
 TRUNCATE TABLE imagenes RESTART IDENTITY CASCADE;
-*/
 
-/*
+
+
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
 INSERT INTO categoria (nombre_categoria) VALUES ('Hogar');
@@ -16,34 +16,170 @@ INSERT INTO categoria (nombre_categoria) VALUES ('Ropa');
 INSERT INTO categoria (nombre_categoria) VALUES ('Tecnología');
 INSERT INTO categoria (nombre_categoria) VALUES ('Deportes');
 
-INSERT INTO productos (nombre, descripcion, cantidad_disponible, precio_compra, stock_minimo, deleted_at, categoria_id, palabras_clave)
-VALUES 
+
+INSERT INTO productos (nombre, descripcion, cantidad_disponible, precio_compra, stock_minimo, deleted_at, categoria_id, palabras_clave) VALUES
 ('Aspiradora', 'Aspiradora eléctrica para el hogar', 10, 350000.00, 2, NULL, 1, 'aspiradora, limpieza, hogar, electrodoméstico'),
-('Camiseta', 'Camiseta de algodón', 25, 25000.00, 5, NULL, 2, 'camiseta, ropa, algodón, camiseta básica'),
-('Smartphone', 'Teléfono inteligente gama media', 15, 900000.00, 3, NULL, 3, 'smartphone, celular, android, tecnología'),
 ('Silla de comedor', 'Silla de madera para comedor', 8, 120000.00, 2, NULL, 1, 'silla, comedor, madera, mueble'),
-('Jeans', 'Pantalón de mezclilla azul', 30, 60000.00, 5, NULL, 2, 'jeans, mezclilla, pantalón, azul'),
-('Balón de fútbol', 'Balón de fútbol profesional talla 5', 20, 45000.00, 4, NULL, 4, 'balón, fútbol, deporte, pelota'),
-('Raqueta de tenis', 'Raqueta de tenis ligera para principiantes', 12, 80000.00, 3, NULL, 4, 'raqueta, tenis, deporte, juego');
+('Lámpara de techo', 'Lámpara moderna con diseño minimalista', 15, 85000.00, 3, NULL, 1, 'lámpara, iluminación, hogar, techo'),
+('Mesa auxiliar', 'Mesa pequeña para sala o recibidor', 12, 95000.00, 2, NULL, 1, 'mesa, auxiliar, hogar, mueble'),
+('Cortinas', 'Cortinas blackout gris oscuro', 20, 45000.00, 4, NULL, 1, 'cortinas, ventana, hogar, tela'),
+('Alfombra decorativa', 'Alfombra de sala color beige', 7, 130000.00, 2, NULL, 1, 'alfombra, hogar, decoración, sala'),
+('Estantería', 'Estantería de 4 niveles para libros', 9, 180000.00, 3, NULL, 1, 'estantería, libros, hogar, madera'),
+('Cojines decorativos', 'Set de 4 cojines con diseño moderno', 18, 38000.00, 5, NULL, 1, 'cojines, sofá, decoración, hogar'),
+('Reloj de pared', 'Reloj grande para sala con números romanos', 6, 67000.00, 2, NULL, 1, 'reloj, pared, sala, hogar'),
+('Espejo decorativo', 'Espejo redondo con marco de metal dorado', 11, 99000.00, 3, NULL, 1, 'espejo, decoración, hogar, metal'),
+('Centro de entretenimiento', 'Mueble para TV y consolas', 4, 220000.00, 1, NULL, 1, 'centro, tv, entretenimiento, hogar'),
+('Ventilador de techo', 'Ventilador con luz integrada', 5, 145000.00, 2, NULL, 1, 'ventilador, techo, hogar, luz'),
+('Plancha de vapor', 'Plancha con sistema antigoteo', 14, 72000.00, 3, NULL, 1, 'plancha, vapor, ropa, hogar'),
+('Cafetera eléctrica', 'Cafetera para 12 tazas', 10, 110000.00, 2, NULL, 1, 'cafetera, cocina, hogar, café'),
+('Organizador de zapatos', 'Mueble organizador para 15 pares', 6, 95000.00, 2, NULL, 1, 'organizador, zapatos, hogar, mueble'),
+('Tabla de planchar', 'Tabla ajustable con superficie acolchada', 13, 65000.00, 3, NULL, 1, 'tabla, planchar, hogar, ropa'),
+('Dispensador de agua', 'Dispensador frío-calor para galones', 3, 180000.00, 1, NULL, 1, 'dispensador, agua, hogar, cocina'),
+('Set de cuchillos', 'Juego de 6 cuchillos con soporte', 16, 52000.00, 4, NULL, 1, 'cuchillos, cocina, hogar, acero'),
+('Tendedero plegable', 'Tendedero de acero inoxidable', 8, 47000.00, 2, NULL, 1, 'tendedero, ropa, hogar, acero'),
+('Caja organizadora', 'Caja de plástico con tapa', 25, 22000.00, 5, NULL, 1, 'caja, organizador, hogar, plástico'),
+('Camiseta básica', 'Camiseta de algodón para uso diario', 30, 20000.00, 5, NULL, 2, 'camiseta, algodón, ropa, básica'),
+('Pantalón deportivo', 'Pantalón cómodo para ejercicio', 20, 45000.00, 4, NULL, 2, 'pantalón, deporte, ejercicio, ropa'),
+('Chaqueta impermeable', 'Chaqueta contra la lluvia', 15, 120000.00, 2, NULL, 2, 'chaqueta, impermeable, lluvia, abrigo'),
+('Falda plisada', 'Falda elegante plisada para mujer', 12, 70000.00, 2, NULL, 2, 'falda, plisada, mujer, elegante'),
+('Polo manga larga', 'Polo clásico con mangas largas', 25, 55000.00, 3, NULL, 2, 'polo, manga larga, ropa, clásica'),
+('Sudadera con capucha', 'Sudadera cálida con capucha', 18, 80000.00, 3, NULL, 2, 'sudadera, capucha, abrigo, ropa'),
+('Short deportivo', 'Shorts para correr o entrenar', 20, 35000.00, 5, NULL, 2, 'short, deporte, entrenar, correr'),
+('Vestido de verano', 'Vestido ligero para climas cálidos', 10, 95000.00, 2, NULL, 2, 'vestido, verano, ligero, ropa'),
+('Camisa formal', 'Camisa elegante para oficina', 15, 75000.00, 3, NULL, 2, 'camisa, formal, oficina, elegante'),
+('Leggings', 'Leggings elásticos para deporte', 22, 40000.00, 4, NULL, 2, 'leggings, deporte, elástico, ropa'),
+('Chaqueta de mezclilla', 'Chaqueta clásica de mezclilla azul', 8, 110000.00, 2, NULL, 2, 'chaqueta, mezclilla, ropa, azul'),
+('Top de tirantes', 'Blusa sin mangas para verano', 20, 30000.00, 3, NULL, 2, 'top, tirantes, verano, blusa'),
+('Bufanda de lana', 'Bufanda cálida para invierno', 25, 25000.00, 5, NULL, 2, 'bufanda, lana, invierno, abrigo'),
+('Gorra deportiva', 'Gorra ajustable para sol', 30, 15000.00, 5, NULL, 2, 'gorra, deportiva, sol, ajustable'),
+('Calcetines largos', 'Calcetines térmicos para invierno', 40, 12000.00, 5, NULL, 2, 'calcetines, largos, térmicos, invierno'),
+('Pijama de algodón', 'Pijama cómoda para dormir', 18, 65000.00, 2, NULL, 2, 'pijama, algodón, dormir, ropa'),
+('Zapatos deportivos', 'Calzado para correr y entrenar', 14, 130000.00, 2, NULL, 2, 'zapatos, deportivos, correr, entrenar'),
+('Cinturón de cuero', 'Cinturón clásico de cuero', 20, 45000.00, 3, NULL, 2, 'cinturón, cuero, ropa, accesorio'),
+('Guantes de invierno', 'Guantes térmicos para clima frío', 16, 30000.00, 3, NULL, 2, 'guantes, invierno, térmicos, ropa'),
+('Sandalias planas', 'Sandalias cómodas para verano', 22, 55000.00, 4, NULL, 2, 'sandalias, verano, planas, cómodas'),
+('Smartphone Android', 'Teléfono inteligente con Android 12', 15, 950000.00, 3, NULL, 3, 'smartphone, android, celular, tecnología'),
+('Laptop ultradelgada', 'Portátil liviana con SSD de 512GB', 10, 2400000.00, 2, NULL, 3, 'laptop, portátil, ultradelgada, SSD'),
+('Auriculares inalámbricos', 'Audífonos Bluetooth con cancelación de ruido', 20, 180000.00, 4, NULL, 3, 'auriculares, bluetooth, inalámbrico, audio'),
+('Smartwatch deportivo', 'Reloj inteligente con monitoreo cardíaco', 18, 350000.00, 3, NULL, 3, 'smartwatch, reloj, inteligente, deporte'),
+('Tablet 10"', 'Tableta con pantalla de 10 pulgadas y Android', 12, 700000.00, 2, NULL, 3, 'tablet, android, pantalla, tecnología'),
+('Teclado mecánico', 'Teclado para gaming retroiluminado', 20, 220000.00, 5, NULL, 3, 'teclado, gaming, mecánico, retroiluminado'),
+('Mouse inalámbrico', 'Ratón óptico recargable', 25, 85000.00, 5, NULL, 3, 'mouse, inalámbrico, ratón, óptico'),
+('Monitor 24"', 'Monitor LED Full HD', 10, 520000.00, 2, NULL, 3, 'monitor, pantalla, LED, Full HD'),
+('Disco duro externo 1TB', 'Almacenamiento portátil USB 3.0', 15, 190000.00, 3, NULL, 3, 'disco duro, externo, almacenamiento, USB'),
+('Cámara web HD', 'Cámara para videollamadas y streaming', 20, 130000.00, 4, NULL, 3, 'cámara web, HD, streaming, videollamadas'),
+('Cargador portátil 10000mAh', 'Powerbank compacto de carga rápida', 25, 95000.00, 5, NULL, 3, 'cargador, portátil, powerbank, batería'),
+('Router Wi-Fi', 'Router de doble banda con amplio alcance', 12, 180000.00, 3, NULL, 3, 'router, wifi, red, internet'),
+('Impresora multifuncional', 'Impresora con escáner y fotocopiadora', 8, 600000.00, 2, NULL, 3, 'impresora, multifuncional, escáner, copia'),
+('Altavoz inteligente', 'Asistente de voz con conexión Wi-Fi', 18, 280000.00, 3, NULL, 3, 'altavoz, inteligente, asistente, voz'),
+('Cámara de seguridad Wi-Fi', 'Cámara para vigilancia en el hogar', 14, 320000.00, 2, NULL, 3, 'cámara, seguridad, vigilancia, wifi'),
+('Memoria USB 64GB', 'Pendrive de alta velocidad', 30, 40000.00, 5, NULL, 3, 'usb, memoria, pendrive, almacenamiento'),
+('Soporte para laptop', 'Base ajustable y ergonómica', 20, 50000.00, 4, NULL, 3, 'soporte, laptop, base, ergonómica'),
+('Cable HDMI 2m', 'Cable para conexión de video en alta resolución', 25, 25000.00, 5, NULL, 3, 'hdmi, cable, video, alta definición'),
+('Lámpara LED USB', 'Luz flexible para laptops y teclados', 30, 15000.00, 5, NULL, 3, 'lámpara, led, usb, luz'),
+('Kit limpieza PC', 'Kit con aire comprimido y brochas', 20, 35000.00, 4, NULL, 3, 'limpieza, pc, kit, accesorios'),
+('Balón de fútbol', 'Balón profesional tamaño 5', 20, 60000.00, 4, NULL, 4, 'balón, fútbol, deporte, equipo'),
+('Bicicleta de montaña', 'Bicicleta con suspensión delantera', 5, 850000.00, 1, NULL, 4, 'bicicleta, montaña, ciclismo, deporte'),
+('Mancuernas ajustables', 'Par de mancuernas con peso regulable', 10, 150000.00, 2, NULL, 4, 'mancuernas, pesas, gimnasio, ejercicio'),
+('Colchoneta yoga', 'Alfombra antideslizante para yoga', 15, 40000.00, 3, NULL, 4, 'colchoneta, yoga, ejercicio, deporte'),
+('Raqueta de tenis', 'Raqueta de aluminio con funda', 8, 120000.00, 2, NULL, 4, 'raqueta, tenis, deporte, juego'),
+('Zapatillas deportivas', 'Zapatillas ligeras para correr', 12, 180000.00, 3, NULL, 4, 'zapatillas, correr, calzado, deporte'),
+('Cuerda para saltar', 'Cuerda de velocidad con rodamientos', 20, 25000.00, 4, NULL, 4, 'cuerda, saltar, ejercicio, fitness'),
+('Guantes de boxeo', 'Guantes acolchados talla M', 10, 95000.00, 2, NULL, 4, 'guantes, boxeo, deporte, combate'),
+('Rodilleras deportivas', 'Protección para actividades de impacto', 18, 30000.00, 3, NULL, 4, 'rodilleras, protección, deporte, articulaciones'),
+('Camiseta deportiva', 'Camiseta transpirable para entrenamientos', 25, 35000.00, 5, NULL, 4, 'camiseta, deportiva, entrenamiento, ropa'),
+('Pesas rusas', 'Kettlebells recubiertas de vinilo', 6, 130000.00, 1, NULL, 4, 'pesas, kettlebell, fuerza, ejercicio'),
+('Gorro de natación', 'Gorro de silicona resistente al agua', 30, 15000.00, 5, NULL, 4, 'gorro, natación, piscina, deporte'),
+('Antiparras', 'Lentes para nadar con protección UV', 20, 22000.00, 4, NULL, 4, 'antiparras, natación, lentes, piscina'),
+('Pelota de pilates', 'Pelota inflable para ejercicios de equilibrio', 14, 55000.00, 2, NULL, 4, 'pelota, pilates, equilibrio, fitness'),
+('Set de bandas elásticas', 'Bandas de resistencia para entrenamiento', 22, 45000.00, 3, NULL, 4, 'bandas, resistencia, elásticas, ejercicio'),
+('Chaleco con peso', 'Chaleco ajustable para entrenamiento funcional', 7, 160000.00, 2, NULL, 4, 'chaleco, peso, entrenamiento, fitness'),
+('Botella deportiva', 'Botella reutilizable 1L', 35, 18000.00, 5, NULL, 4, 'botella, hidratación, deporte, agua'),
+('Tobilleras con peso', 'Par de tobilleras para caminata o entrenamiento', 12, 40000.00, 3, NULL, 4, 'tobilleras, peso, caminar, ejercicio'),
+('Pesa para muñeca', 'Pesa ligera para brazos', 10, 30000.00, 2, NULL, 4, 'muñeca, pesa, ejercicio, brazo'),
+('Bolso deportivo', 'Bolso con compartimentos para ropa y calzado', 10, 65000.00, 3, NULL, 4, 'bolso, gimnasio, deporte, equipamiento');
 
-INSERT INTO imagenes (producto_id, image_url) VALUES (1, 'https://ejemplo.com/aspiradora1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (1, 'https://ejemplo.com/aspiradora2.jpg');
 
-INSERT INTO imagenes (producto_id, image_url) VALUES (2, 'https://ejemplo.com/camiseta1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (2, 'https://ejemplo.com/camiseta2.jpg');
+INSERT INTO imagenes (producto_id, image_url) VALUES
+(1, 'https://example.com/imagenes/aspiradora.jpg'),
+(2, 'https://example.com/imagenes/silla-comedor.jpg'),
+(3, 'https://example.com/imagenes/lampara-techo.jpg'),
+(4, 'https://example.com/imagenes/mesa-auxiliar.jpg'),
+(5, 'https://example.com/imagenes/cortinas.jpg'),
+(6, 'https://example.com/imagenes/alfombra.jpg'),
+(7, 'https://example.com/imagenes/estanteria.jpg'),
+(8, 'https://example.com/imagenes/cojines.jpg'),
+(9, 'https://example.com/imagenes/reloj.jpg'),
+(10, 'https://example.com/imagenes/espejo.jpg'),
+(11, 'https://example.com/imagenes/centro-tv.jpg'),
+(12, 'https://example.com/imagenes/ventilador.jpg'),
+(13, 'https://example.com/imagenes/plancha.jpg'),
+(14, 'https://example.com/imagenes/cafetera.jpg'),
+(15, 'https://example.com/imagenes/organizador-zapatos.jpg'),
+(16, 'https://example.com/imagenes/tabla-planchar.jpg'),
+(17, 'https://example.com/imagenes/dispensador.jpg'),
+(18, 'https://example.com/imagenes/cuchillos.jpg'),
+(19, 'https://example.com/imagenes/tendedero.jpg'),
+(20, 'https://example.com/imagenes/caja-organizadora.jpg'),
+(21, 'https://example.com/images/camiseta_basica.jpg'),
+(22, 'https://example.com/images/pantalon_deportivo.jpg'),
+(23, 'https://example.com/images/chaqueta_impermeable.jpg'),
+(24, 'https://example.com/images/falda_plisada.jpg'),
+(25, 'https://example.com/images/polo_manga_larga.jpg'),
+(26, 'https://example.com/images/sudadera_capucha.jpg'),
+(27, 'https://example.com/images/short_deportivo.jpg'),
+(28, 'https://example.com/images/vestido_verano.jpg'),
+(29, 'https://example.com/images/camisa_formal.jpg'),
+(30, 'https://example.com/images/leggings.jpg'),
+(31, 'https://example.com/images/chaqueta_mezclilla.jpg'),
+(32, 'https://example.com/images/top_tirantes.jpg'),
+(33, 'https://example.com/images/bufanda_lana.jpg'),
+(34, 'https://example.com/images/gorra_deportiva.jpg'),
+(35, 'https://example.com/images/calcetines_largos.jpg'),
+(36, 'https://example.com/images/pijama_algodon.jpg'),
+(37, 'https://example.com/images/zapatos_deportivos.jpg'),
+(38, 'https://example.com/images/cinturon_cuero.jpg'),
+(39, 'https://example.com/images/guantes_invierno.jpg'),
+(40, 'https://example.com/images/sandalias_plana.jpg'),
+(41, 'https://example.com/images/smartphone_android.jpg'),
+(42, 'https://example.com/images/laptop_ultradelgada.jpg'),
+(43, 'https://example.com/images/auriculares_inalambricos.jpg'),
+(44, 'https://example.com/images/smartwatch_deportivo.jpg'),
+(45, 'https://example.com/images/tablet_10.jpg'),
+(46, 'https://example.com/images/teclado_mecanico.jpg'),
+(47, 'https://example.com/images/mouse_inalambrico.jpg'),
+(48, 'https://example.com/images/monitor_24.jpg'),
+(49, 'https://example.com/images/disco_duro_1tb.jpg'),
+(50, 'https://example.com/images/camara_web_hd.jpg'),
+(51, 'https://example.com/images/cargador_portatil.jpg'),
+(52, 'https://example.com/images/router_wifi.jpg'),
+(53, 'https://example.com/images/impresora_multifuncional.jpg'),
+(54, 'https://example.com/images/altavoz_inteligente.jpg'),
+(55, 'https://example.com/images/camara_seguridad.jpg'),
+(56, 'https://example.com/images/memoria_usb.jpg'),
+(57, 'https://example.com/images/soporte_laptop.jpg'),
+(58, 'https://example.com/images/cable_hdmi.jpg'),
+(59, 'https://example.com/images/lampara_led.jpg'),
+(60, 'https://example.com/images/kit_limpieza_pc.jpg'),
+(61, 'https://example.com/images/balon_futbol.jpg'),
+(62, 'https://example.com/images/bicicleta_montana.jpg'),
+(63, 'https://example.com/images/mancuernas_ajustables.jpg'),
+(64, 'https://example.com/images/colchoneta_yoga.jpg'),
+(65, 'https://example.com/images/raqueta_tenis.jpg'),
+(66, 'https://example.com/images/zapatillas_deportivas.jpg'),
+(67, 'https://example.com/images/cuerda_saltar.jpg'),
+(68, 'https://example.com/images/guantes_boxeo.jpg'),
+(69, 'https://example.com/images/rodilleras.jpg'),
+(70, 'https://example.com/images/camiseta_deportiva.jpg'),
+(71, 'https://example.com/images/pesas_rusas.jpg'),
+(72, 'https://example.com/images/gorro_natacion.jpg'),
+(73, 'https://example.com/images/antiparras.jpg'),
+(74, 'https://example.com/images/pelota_pilates.jpg'),
+(75, 'https://example.com/images/bandas_elasticas.jpg'),
+(76, 'https://example.com/images/chaleco_peso.jpg'),
+(77, 'https://example.com/images/botella_deportiva.jpg'),
+(78, 'https://example.com/images/tobilleras_peso.jpg'),
+(79, 'https://example.com/images/pesa_muneca.jpg'),
+(80, 'https://example.com/images/bolso_deportivo.jpg');
 
-INSERT INTO imagenes (producto_id, image_url) VALUES (3, 'https://ejemplo.com/smartphone1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (3, 'https://ejemplo.com/smartphone2.jpg');
-
-INSERT INTO imagenes (producto_id, image_url) VALUES (4, 'https://ejemplo.com/silla1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (4, 'https://ejemplo.com/silla2.jpg');
-
-INSERT INTO imagenes (producto_id, image_url) VALUES (5, 'https://ejemplo.com/jeans1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (5, 'https://ejemplo.com/jeans2.jpg');
-
-INSERT INTO imagenes (producto_id, image_url) VALUES (6, 'https://ejemplo.com/balon1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (6, 'https://ejemplo.com/balon2.jpg');
-
-INSERT INTO imagenes (producto_id, image_url) VALUES (7, 'https://ejemplo.com/raqueta1.jpg');
-INSERT INTO imagenes (producto_id, image_url) VALUES (7, 'https://ejemplo.com/raqueta2.jpg');
 */

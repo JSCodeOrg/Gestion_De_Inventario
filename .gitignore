@@ -34,3 +34,4 @@ build/
 .qodo
 
 .env
+.data.sql
