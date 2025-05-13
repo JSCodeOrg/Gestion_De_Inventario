@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/productos/filtrar", "/api/productos/buscar")
+                        .requestMatchers("/api/productos/filtrar", "/api/productos/buscar", "/api/productos/categorias", "/api/productos/obtener/categoria")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

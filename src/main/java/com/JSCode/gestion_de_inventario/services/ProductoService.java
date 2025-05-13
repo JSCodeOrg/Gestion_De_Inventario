@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
@@ -212,5 +213,14 @@ public class ProductoService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+    public List<CategoriaDTO> obtenerCategorias() {
+        List<Categoria> categorias = categoriaRepository.findAll();
+        return categorias.stream().map(categoria -> {
+            CategoriaDTO dto = new CategoriaDTO();
+            dto.setId(categoria.getId());
+            dto.setNombreCategoria(categoria.getNombreCategoria());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

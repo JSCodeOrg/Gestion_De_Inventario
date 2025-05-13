@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
@@ -75,11 +76,15 @@ public class ProductosController {
         ProductoDTO producto = productoService.verProducto(id);
         return ResponseEntity.ok(new ApiResponse<>("Producto encontrado con éxito", producto, false, 200));   
     }  
-
-    @PreAuthorize("hasRole('administrador')")
+    
     @GetMapping("/obtener/categoria")
     public ResponseEntity<List<ProductoCarruselDTO>> obtenerPorCategoria(@RequestParam Long categoria_id){
         List<ProductoCarruselDTO> productos = this.productoService.obtenerProductosCarrusel(categoria_id);
         return ResponseEntity.ok(productos);
+    }
+    @GetMapping("/categorias")
+    public ResponseEntity<ApiResponse<List<CategoriaDTO>>> obtenerCategorias() {
+        List<CategoriaDTO> categorias = productoService.obtenerCategorias();
+        return ResponseEntity.ok(new ApiResponse<>("Categorias obtenidas con éxito", categorias, false, 200));
     }
 }
