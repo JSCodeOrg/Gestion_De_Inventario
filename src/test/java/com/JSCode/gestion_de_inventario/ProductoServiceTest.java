@@ -1,6 +1,7 @@
 package com.JSCode.gestion_de_inventario;
 
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
 import com.JSCode.gestion_de_inventario.models.Categoria;
 import com.JSCode.gestion_de_inventario.models.Imagenes;
@@ -12,6 +13,7 @@ import com.JSCode.gestion_de_inventario.services.ProductoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProductoServiceTest {
@@ -123,4 +126,102 @@ public class ProductoServiceTest {
 
         assertEquals("Categoría no encontrada con ID: 99", exception.getMessage());
     }
+    @Test
+    void testFiltrarProductos_porNombreYCategoria() {
+    
+        Productos producto = new Productos();
+        producto.setId(1L);
+        producto.setNombre("Laptop ASUS");
+        producto.setDescripcion("Portátil de alto rendimiento");
+        producto.setPrecioCompra(new BigDecimal("1500.00"));
+
+        Categoria categoria = new Categoria();
+        categoria.setId(2L);
+        categoria.setNombreCategoria("Electrónica");
+        producto.setCategoria(categoria);
+
+        Imagenes imagen = new Imagenes();
+        imagen.setImageUrl("laptop.jpg");
+        imagen.setProducto(producto);
+        producto.setImagenes(List.of(imagen));
+
+        
+        when(productoRepository.findAll(any(Specification.class))).thenReturn(List.of(producto));
+
+        List<ProductoResumenDTO> resultado = productoService.filtrarProductos("laptop", "Electrónica", null, null);
+
+
+        assertEquals(1, resultado.size());
+        ProductoResumenDTO dto = resultado.get(0);
+        assertEquals("Laptop ASUS", dto.getNombre());
+        assertEquals("Portátil de alto rendimiento", dto.getDescripcion());
+        assertEquals(new BigDecimal("1500.00"), dto.getPrecioCompra());
+        assertEquals(List.of("laptop.jpg"), dto.getImagenes());
+    }
+
+    @Test
+    void testFiltrarProductos_porPrecioMinimo() {
+        
+        Productos producto = new Productos();
+        producto.setId(2L);
+        producto.setNombre("Monitor Gamer");
+        producto.setDescripcion("Monitor de 27 pulgadas");
+        producto.setPrecioCompra(new BigDecimal("300.00"));
+
+        Categoria categoria = new Categoria();
+        categoria.setId(3L);
+        categoria.setNombreCategoria("Periféricos");
+        producto.setCategoria(categoria);
+
+        Imagenes imagen = new Imagenes();
+        imagen.setImageUrl("monitor.jpg");
+        imagen.setProducto(producto);
+        producto.setImagenes(List.of(imagen));
+
+        when(productoRepository.findAll(any(Specification.class))).thenReturn(List.of(producto));
+
+        
+        List<ProductoResumenDTO> resultado = productoService.filtrarProductos(null, null, new BigDecimal("250.00"), null);
+
+        
+        assertEquals(1, resultado.size());
+        ProductoResumenDTO dto = resultado.get(0);
+        assertEquals("Monitor Gamer", dto.getNombre());
+        assertEquals("Monitor de 27 pulgadas", dto.getDescripcion());
+        assertEquals(new BigDecimal("300.00"), dto.getPrecioCompra());
+        assertEquals(List.of("monitor.jpg"), dto.getImagenes());
+}
+    @Test
+    void testFiltrarProductos_porPrecioMaximo() {
+        
+        Productos producto = new Productos();
+        producto.setId(3L);
+        producto.setNombre("Mouse inalámbrico");
+        producto.setDescripcion("Mouse con conexión Bluetooth");
+        producto.setPrecioCompra(new BigDecimal("25.00"));
+
+        Categoria categoria = new Categoria();
+        categoria.setId(4L);
+        categoria.setNombreCategoria("Accesorios");
+        producto.setCategoria(categoria);
+
+        Imagenes imagen = new Imagenes();
+        imagen.setImageUrl("mouse.jpg");
+        imagen.setProducto(producto);
+        producto.setImagenes(List.of(imagen));
+
+        when(productoRepository.findAll(any(Specification.class))).thenReturn(List.of(producto));
+
+       
+        List<ProductoResumenDTO> resultado = productoService.filtrarProductos(null, null, null, new BigDecimal("30.00"));
+
+        
+        assertEquals(1, resultado.size());
+        ProductoResumenDTO dto = resultado.get(0);
+        assertEquals("Mouse inalámbrico", dto.getNombre());
+        assertEquals("Mouse con conexión Bluetooth", dto.getDescripcion());
+        assertEquals(new BigDecimal("25.00"), dto.getPrecioCompra());
+        assertEquals(List.of("mouse.jpg"), dto.getImagenes());
+    }
+
 }
