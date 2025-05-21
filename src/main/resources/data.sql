@@ -3,6 +3,7 @@
 mientras tengan datos los dejan comentados*/
 
 /*
+
 TRUNCATE TABLE productos RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categoria RESTART IDENTITY CASCADE;
 TRUNCATE TABLE imagenes RESTART IDENTITY CASCADE;

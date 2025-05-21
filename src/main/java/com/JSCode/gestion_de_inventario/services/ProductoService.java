@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
@@ -19,6 +21,7 @@ import com.JSCode.gestion_de_inventario.models.Categoria;
 import com.JSCode.gestion_de_inventario.models.Imagenes;
 import com.JSCode.gestion_de_inventario.models.Productos;
 import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
+import com.JSCode.gestion_de_inventario.repositories.ImagenesRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
 
 @Service
@@ -30,14 +33,12 @@ public class ProductoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    public List<ProductoResumenDTO> filtrarProductos(String nombre, String categoria, BigDecimal precioMin,
+    @Autowired
+    private ImagenesRepository imagenesRepository;
+
+    public List<ProductoResumenDTO> filtrarProductos(String categoria, BigDecimal precioMin,
             BigDecimal precioMax) {
         Specification<Productos> spec = Specification.where(null);
-
-        if (nombre != null && !nombre.isEmpty()) {
-            spec = spec
-                    .and((root, query, cb) -> cb.like(cb.lower(root.get("nombre")), "%" + nombre.toLowerCase() + "%"));
-        }
 
         if (categoria != null && !categoria.isEmpty()) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("categoria").get("nombreCategoria"), categoria));
@@ -222,5 +223,53 @@ public class ProductoService {
             dto.setNombreCategoria(categoria.getNombreCategoria());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ProductoDTO agregarProductoNuevo(AgregarProductNuevoDTO productoDTO) {
+        // Validar que la categoría existe
+        Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
+
+        // Crear el nuevo producto
+        Productos nuevoProducto = new Productos();
+        nuevoProducto.setNombre(productoDTO.getNombre());
+        nuevoProducto.setDescripcion(productoDTO.getDescripcion());
+        nuevoProducto.setCantidadDisponible(productoDTO.getCantidadDisponible());
+        nuevoProducto.setPrecioCompra(productoDTO.getPrecioCompra());
+        nuevoProducto.setStockMinimo(productoDTO.getStockMinimo());
+        nuevoProducto.setPalabrasClave(productoDTO.getPalabrasClave());
+        nuevoProducto.setCategoria(categoria);
+
+        // Guardar el producto
+        Productos productoGuardado = productoRepository.save(nuevoProducto);
+
+        // Agregar las imágenes si existen
+        if (productoDTO.getImagenesUrls() != null && !productoDTO.getImagenesUrls().isEmpty()) {
+            for (String url : productoDTO.getImagenesUrls()) {
+                Imagenes imagen = new Imagenes();
+                imagen.setImageUrl(url);
+                imagen.setProducto(productoGuardado);
+                imagenesRepository.save(imagen);
+            }
+        }
+
+        // Crear y retornar el DTO de respuesta
+        ProductoDTO responseDTO = new ProductoDTO();
+        responseDTO.setNombre(productoGuardado.getNombre());
+        responseDTO.setDescripcion(productoGuardado.getDescripcion());
+        responseDTO.setCantidadDisponible(productoGuardado.getCantidadDisponible());
+        responseDTO.setPrecioCompra(productoGuardado.getPrecioCompra());
+        responseDTO.setStockMinimo(productoGuardado.getStockMinimo());
+        responseDTO.setPalabrasClave(productoGuardado.getPalabrasClave());
+        responseDTO.setCategoriaId(productoGuardado.getCategoria().getId());
+
+        List<String> urlsImagenes = productoGuardado.getImagenes().stream()
+                .map(Imagenes::getImageUrl)
+                .collect(Collectors.toList());
+        responseDTO.setUrlsImagenes(urlsImagenes);
+
+        return responseDTO;
     }
 }
