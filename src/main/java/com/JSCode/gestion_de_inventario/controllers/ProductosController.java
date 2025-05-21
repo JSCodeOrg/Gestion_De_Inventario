@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
@@ -33,12 +34,11 @@ public class ProductosController {
 
     @GetMapping("/filtrar")
     public ResponseEntity<ApiResponse<List<ProductoResumenDTO>>> filtrarProductos(
-            @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) BigDecimal precioMin,
             @RequestParam(required = false) BigDecimal precioMax) {
 
-        List<ProductoResumenDTO> productos = productoService.filtrarProductos(nombre, categoria, precioMin, precioMax);
+        List<ProductoResumenDTO> productos = productoService.filtrarProductos(categoria, precioMin, precioMax);
         return ResponseEntity.ok(new ApiResponse<>("Productos filtrados con éxito", productos, false, 200));
     }
 
@@ -71,6 +71,7 @@ public class ProductosController {
         productoService.agregarUnidadesProducto(id, cantidadDTO);
         return ResponseEntity.ok(new ApiResponse<>("Producto agregado con éxito", false, 200));
          }
+
     @GetMapping("/ver/{id}")
     public ResponseEntity<ApiResponse<ProductoDTO>> verProducto(@PathVariable Long id) {
         ProductoDTO producto = productoService.verProducto(id);
@@ -86,5 +87,12 @@ public class ProductosController {
     public ResponseEntity<ApiResponse<List<CategoriaDTO>>> obtenerCategorias() {
         List<CategoriaDTO> categorias = productoService.obtenerCategorias();
         return ResponseEntity.ok(new ApiResponse<>("Categorias obtenidas con éxito", categorias, false, 200));
+    }
+
+    @PreAuthorize("hasRole('administrador')")
+    @PostMapping("/agregar/nuevoproducto")
+    public ResponseEntity<ApiResponse<ProductoDTO>> agregarProductoNuevo(@RequestBody AgregarProductNuevoDTO productoDTO) {
+        ProductoDTO productoAgregado = productoService.agregarProductoNuevo(productoDTO);
+        return ResponseEntity.ok(new ApiResponse<>("Producto agregado con éxito", productoAgregado, false, 201));
     }
 }
