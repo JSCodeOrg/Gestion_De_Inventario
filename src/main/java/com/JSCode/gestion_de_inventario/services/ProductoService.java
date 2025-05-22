@@ -227,12 +227,10 @@ public class ProductoService {
 
     @Transactional
     public ProductoDTO agregarProductoNuevo(AgregarProductNuevoDTO productoDTO) {
-        // Validar que la categoría existe
         Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
 
-        // Crear el nuevo producto
         Productos nuevoProducto = new Productos();
         nuevoProducto.setNombre(productoDTO.getNombre());
         nuevoProducto.setDescripcion(productoDTO.getDescripcion());
@@ -242,10 +240,8 @@ public class ProductoService {
         nuevoProducto.setPalabrasClave(productoDTO.getPalabrasClave());
         nuevoProducto.setCategoria(categoria);
 
-        // Guardar el producto
         Productos productoGuardado = productoRepository.save(nuevoProducto);
 
-        // Agregar las imágenes si existen
         if (productoDTO.getImagenesUrls() != null && !productoDTO.getImagenesUrls().isEmpty()) {
             for (String url : productoDTO.getImagenesUrls()) {
                 Imagenes imagen = new Imagenes();
@@ -255,7 +251,6 @@ public class ProductoService {
             }
         }
 
-        // Crear y retornar el DTO de respuesta
         ProductoDTO responseDTO = new ProductoDTO();
         responseDTO.setNombre(productoGuardado.getNombre());
         responseDTO.setDescripcion(productoGuardado.getDescripcion());
