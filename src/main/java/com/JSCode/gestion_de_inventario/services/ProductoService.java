@@ -3,13 +3,13 @@ package com.JSCode.gestion_de_inventario.services;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
@@ -62,16 +62,16 @@ public class ProductoService {
                 producto.getImagenes().stream().map(imagen -> imagen.getImageUrl()).toList())).toList();
     }
 
-    public List<ProductoResumenDTO> buscarPorTexto(String texto) {
+    public Page<ProductoResumenDTO> buscarPorTexto(String texto, Pageable pageable) {
         String keyword = "%" + texto.toLowerCase() + "%";
 
-        List<Productos> productos = productoRepository.findAll((root, query, cb) -> cb.or(
+        Page<Productos> productosPage = productoRepository.findAll((root, query, cb) -> cb.or(
                 cb.like(cb.lower(root.get("nombre")), keyword),
                 cb.like(cb.lower(root.get("descripcion")), keyword),
                 cb.like(cb.lower(root.get("categoria").get("nombreCategoria")), keyword),
-                cb.like(cb.lower(root.get("palabrasClave")), keyword)));
+                cb.like(cb.lower(root.get("palabrasClave")), keyword)), pageable);
 
-        return productos.stream().map(producto -> {
+        return productosPage.map(producto -> {
             List<String> imagenes = producto.getImagenes().stream()
                     .map(imagen -> imagen.getImageUrl())
                     .toList();
@@ -82,7 +82,7 @@ public class ProductoService {
                     producto.getDescripcion(),
                     producto.getPrecioCompra(),
                     imagenes);
-        }).toList();
+        });
     }
 
     public ApiResponse<String> productoEliminar(Long id) {
