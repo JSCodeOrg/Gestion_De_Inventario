@@ -2,6 +2,7 @@ package com.JSCode.gestion_de_inventario.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -58,6 +59,7 @@ public class ProductoService {
                 producto.getId(),
                 producto.getNombre(),
                 producto.getDescripcion(),
+                producto.getCategoria(),
                 producto.getPrecioCompra(),
                 producto.getImagenes().stream().map(imagen -> imagen.getImageUrl()).toList())).toList();
     }
@@ -80,6 +82,7 @@ public class ProductoService {
                     producto.getId(),
                     producto.getNombre(),
                     producto.getDescripcion(),
+                    producto.getCategoria(),
                     producto.getPrecioCompra(),
                     imagenes);
         });
@@ -200,14 +203,20 @@ public class ProductoService {
         return productos.stream()
                 .map(producto -> {
                     ProductoCarruselDTO dto = new ProductoCarruselDTO();
-                    dto.setProducto_id(producto.getId());
+                    dto.setId(producto.getId());
 
                     if (!producto.getImagenes().isEmpty()) {
-                        dto.setImageUrl(producto.getImagenes().get(0).getImageUrl());
+                        List<String> urls = producto.getImagenes().stream()
+                            .map(Imagenes::getImageUrl)
+                            .collect(Collectors.toList());
+
+                        dto.setImagenes(urls);
                     } else {
-                        dto.setImageUrl(null);
+                        dto.setImagenes(Collections.emptyList());
                     }
 
+                    dto.setCategoria(producto.getCategoria());
+                    dto.setDescripcion(producto.getDescripcion());
                     dto.setNombre(producto.getNombre());
                     dto.setPrecioCompra(producto.getPrecioCompra());
 
