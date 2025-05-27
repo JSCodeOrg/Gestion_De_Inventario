@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/productos/filtrar", "/productos/buscar", "/productos/categorias", "/productos/obtener/categoria")
+                        .requestMatchers("/productos/filtrar", "/productos/buscar", "/productos/categorias", "/productos/obtener/categoria", "/productos/ver/**")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

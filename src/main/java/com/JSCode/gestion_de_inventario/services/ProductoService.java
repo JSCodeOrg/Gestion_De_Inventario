@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -55,13 +56,24 @@ public class ProductoService {
 
         List<Productos> productos = productoRepository.findAll(spec);
 
-        return productos.stream().map(producto -> new ProductoResumenDTO(
-                producto.getId(),
-                producto.getNombre(),
-                producto.getDescripcion(),
-                producto.getCategoria(),
-                producto.getPrecioCompra(),
-                producto.getImagenes().stream().map(imagen -> imagen.getImageUrl()).toList())).toList();
+        return productos.stream().map(producto -> {
+            List<ImagesDTO> imagenesDTO = producto.getImagenes().stream()
+                    .map(imagen -> {
+                        ImagesDTO dto = new ImagesDTO();
+                        dto.setId(imagen.getId());
+                        dto.setUrl(imagen.getImageUrl());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+
+            return new ProductoResumenDTO(
+                    producto.getId(),
+                    producto.getNombre(),
+                    producto.getDescripcion(),
+                    producto.getCategoria(),
+                    producto.getPrecioCompra(),
+                    imagenesDTO);
+        }).toList();
     }
 
     public Page<ProductoResumenDTO> buscarPorTexto(String texto, Pageable pageable) {
@@ -74,9 +86,14 @@ public class ProductoService {
                 cb.like(cb.lower(root.get("palabrasClave")), keyword)), pageable);
 
         return productosPage.map(producto -> {
-            List<String> imagenes = producto.getImagenes().stream()
-                    .map(imagen -> imagen.getImageUrl())
-                    .toList();
+            List<ImagesDTO> imagenesDTO = producto.getImagenes().stream()
+                    .map(imagen -> {
+                        ImagesDTO dto = new ImagesDTO();
+                        dto.setId(imagen.getId());
+                        dto.setUrl(imagen.getImageUrl());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
 
             return new ProductoResumenDTO(
                     producto.getId(),
@@ -84,7 +101,7 @@ public class ProductoService {
                     producto.getDescripcion(),
                     producto.getCategoria(),
                     producto.getPrecioCompra(),
-                    imagenes);
+                    imagenesDTO);
         });
     }
 
@@ -125,15 +142,16 @@ public class ProductoService {
             producto.setCategoria(categoria);
         }
 
+        // Añadir nuevas imágenes
         if (productoDTO.getNewImages() != null) {
             List<String> imagenesExistentes = producto.getImagenes().stream()
                     .map(Imagenes::getImageUrl)
                     .collect(Collectors.toList());
 
-            for (String url : productoDTO.getNewImages()) {
-                if (!imagenesExistentes.contains(url)) {
+            for (ImagesDTO imagenDTO : productoDTO.getNewImages()) {
+                if (!imagenesExistentes.contains(imagenDTO.getUrl())) {
                     Imagenes nuevaImagen = new Imagenes();
-                    nuevaImagen.setImageUrl(url);
+                    nuevaImagen.setImageUrl(imagenDTO.getUrl());
                     nuevaImagen.setProducto(producto);
                     producto.getImagenes().add(nuevaImagen);
                 }
@@ -141,7 +159,11 @@ public class ProductoService {
         }
 
         if (productoDTO.getDeletedImages() != null) {
-            producto.getImagenes().removeIf(imagen -> productoDTO.getDeletedImages().contains(imagen.getImageUrl()));
+            List<String> urlsAEliminar = productoDTO.getDeletedImages().stream()
+                    .map(ImagesDTO::getUrl)
+                    .collect(Collectors.toList());
+
+            producto.getImagenes().removeIf(imagen -> urlsAEliminar.contains(imagen.getImageUrl()));
         }
 
         Productos productoGuardado = productoRepository.save(producto);
@@ -155,10 +177,16 @@ public class ProductoService {
         dto.setPalabrasClave(productoGuardado.getPalabrasClave());
         dto.setCategoriaId(productoGuardado.getCategoria().getId());
 
-        List<String> urlsImagenes = productoGuardado.getImagenes().stream()
-                .map(Imagenes::getImageUrl)
+        List<ImagesDTO> imagenesDTO = productoGuardado.getImagenes().stream()
+                .map(imagen -> {
+                    ImagesDTO dtoImg = new ImagesDTO();
+                    dtoImg.setId(imagen.getId());
+                    dtoImg.setUrl(imagen.getImageUrl());
+                    return dtoImg;
+                })
                 .collect(Collectors.toList());
-        dto.setUrlsImagenes(urlsImagenes);
+
+        dto.setUrlsImagenes(imagenesDTO);
 
         return dto;
     }
@@ -176,6 +204,7 @@ public class ProductoService {
     public ProductoDTO verProducto(Long id) {
         Productos producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+
         ProductoDTO dto = new ProductoDTO();
         dto.setNombre(producto.getNombre());
         dto.setDescripcion(producto.getDescripcion());
@@ -185,10 +214,16 @@ public class ProductoService {
         dto.setPalabrasClave(producto.getPalabrasClave());
         dto.setCategoriaId(producto.getCategoria().getId());
 
-        List<String> urlsImagenes = producto.getImagenes().stream()
-                .map(Imagenes::getImageUrl)
+        List<ImagesDTO> imagenesDTO = producto.getImagenes().stream()
+                .map(imagen -> {
+                    ImagesDTO imagenDTO = new ImagesDTO();
+                    imagenDTO.setId(imagen.getId());
+                    imagenDTO.setUrl(imagen.getImageUrl());
+                    return imagenDTO;
+                })
                 .collect(Collectors.toList());
-        dto.setUrlsImagenes(urlsImagenes);
+
+        dto.setUrlsImagenes(imagenesDTO);
 
         return dto;
     }
@@ -206,11 +241,16 @@ public class ProductoService {
                     dto.setId(producto.getId());
 
                     if (!producto.getImagenes().isEmpty()) {
-                        List<String> urls = producto.getImagenes().stream()
-                            .map(Imagenes::getImageUrl)
-                            .collect(Collectors.toList());
+                        List<ImagesDTO> imagenesDTO = producto.getImagenes().stream()
+                                .map(imagen -> {
+                                    ImagesDTO imagenDTO = new ImagesDTO();
+                                    imagenDTO.setId(imagen.getId());
+                                    imagenDTO.setUrl(imagen.getImageUrl());
+                                    return imagenDTO;
+                                })
+                                .collect(Collectors.toList());
 
-                        dto.setImagenes(urls);
+                        dto.setImagenes(imagenesDTO);
                     } else {
                         dto.setImagenes(Collections.emptyList());
                     }
@@ -224,6 +264,7 @@ public class ProductoService {
                 })
                 .collect(Collectors.toList());
     }
+
     public List<CategoriaDTO> obtenerCategorias() {
         List<Categoria> categorias = categoriaRepository.findAll();
         return categorias.stream().map(categoria -> {
@@ -250,11 +291,10 @@ public class ProductoService {
         nuevoProducto.setCategoria(categoria);
 
         Productos productoGuardado = productoRepository.save(nuevoProducto);
-
         if (productoDTO.getImagenesUrls() != null && !productoDTO.getImagenesUrls().isEmpty()) {
-            for (String url : productoDTO.getImagenesUrls()) {
+            for (ImagesDTO imagenDTO : productoDTO.getImagenesUrls()) {
                 Imagenes imagen = new Imagenes();
-                imagen.setImageUrl(url);
+                imagen.setImageUrl(imagenDTO.getUrl());
                 imagen.setProducto(productoGuardado);
                 imagenesRepository.save(imagen);
             }
@@ -269,11 +309,17 @@ public class ProductoService {
         responseDTO.setPalabrasClave(productoGuardado.getPalabrasClave());
         responseDTO.setCategoriaId(productoGuardado.getCategoria().getId());
 
-        List<String> urlsImagenes = productoGuardado.getImagenes().stream()
-                .map(Imagenes::getImageUrl)
+        List<ImagesDTO> imagenesDTO = productoGuardado.getImagenes().stream()
+                .map(imagen -> {
+                    ImagesDTO imgDTO = new ImagesDTO();
+                    imgDTO.setId(imagen.getId());
+                    imgDTO.setUrl(imagen.getImageUrl());
+                    return imgDTO;
+                })
                 .collect(Collectors.toList());
-        responseDTO.setUrlsImagenes(urlsImagenes);
+        responseDTO.setUrlsImagenes(imagenesDTO);
 
         return responseDTO;
     }
+
 }

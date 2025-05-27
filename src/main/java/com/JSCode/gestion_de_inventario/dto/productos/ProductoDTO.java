@@ -3,6 +3,8 @@ package com.JSCode.gestion_de_inventario.dto.productos;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,9 +19,9 @@ public class ProductoDTO {
     private Integer cantidadDisponible;
     private BigDecimal precioCompra;
     private Integer stockMinimo;
-    private List<String> urlsImagenes;
+    private List<ImagesDTO> urlsImagenes;
     private String palabrasClave;
-    private List<String> newImages; 
-    private List<String> deletedImages; 
+    private List<ImagesDTO> newImages; 
+    private List<ImagesDTO> deletedImages; 
 
 }
