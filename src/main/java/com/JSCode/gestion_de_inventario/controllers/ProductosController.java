@@ -15,16 +15,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
+import com.JSCode.gestion_de_inventario.services.ImageStorageService;
 import com.JSCode.gestion_de_inventario.services.ProductoService;
 
 @RestController
@@ -33,6 +37,9 @@ public class ProductosController {
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private ImageStorageService imgService;
 
     @GetMapping("/filtrar")
     public ResponseEntity<ApiResponse<List<ProductoResumenDTO>>> filtrarProductos(
@@ -52,13 +59,15 @@ public class ProductosController {
         return ResponseEntity.ok(productos);
     }
 
+
+    @PreAuthorize("hasRole('administrador')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ApiResponse<ProductoDTO>> actualizarProducto(@PathVariable Long id,
-            @RequestBody ProductoDTO productoInfo) {
+        @RequestPart("producto") EditarProductoDTO productoInfo, @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenesAñadidas) {
 
-        ProductoDTO productoActualizado = productoService.actualizarProducto(productoInfo, id);
+        ProductoDTO editedProduct = productoService.actualizarProducto(productoInfo, id, imagenesAñadidas);
 
-        return ResponseEntity.ok(new ApiResponse<>("Producto actualizado con éxito", productoActualizado, false, 200));
+        return ResponseEntity.ok(new ApiResponse<>("Producto actualizado con éxito", editedProduct, false, 200));
 
     }
 

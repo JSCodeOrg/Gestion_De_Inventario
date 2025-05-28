@@ -54,8 +54,7 @@ public class ProductoServiceTest {
         dto.setStockMinimo(5);
         dto.setPalabrasClave("nuevas palabras");
         dto.setCategoriaId(2L);
-        dto.setNewImages(List.of("img1.jpg"));
-        dto.setDeletedImages(List.of("img2.jpg"));
+
 
         Categoria categoria = new Categoria();
         categoria.setId(2L);

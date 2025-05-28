@@ -2,12 +2,15 @@ package com.JSCode.gestion_de_inventario.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Page;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
@@ -37,6 +41,9 @@ public class ProductoService {
 
     @Autowired
     private ImagenesRepository imagenesRepository;
+
+    @Autowired
+    private ImageStorageService imgService;
 
     public List<ProductoResumenDTO> filtrarProductos(String categoria, BigDecimal precioMin,
             BigDecimal precioMax) {
@@ -112,7 +119,9 @@ public class ProductoService {
         return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
     }
 
-    public ProductoDTO actualizarProducto(ProductoDTO productoDTO, Long id) {
+    public ProductoDTO actualizarProducto(EditarProductoDTO productoDTO, Long id,
+            List<MultipartFile> imagenesAñadidas) {
+
         Productos producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
 
@@ -135,59 +144,57 @@ public class ProductoService {
             producto.setPalabrasClave(productoDTO.getPalabrasClave());
         }
 
-        if (productoDTO.getCategoriaId() != null) {
-            Categoria categoria = categoriaRepository.findById(productoDTO.getCategoriaId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Categoría no encontrada con ID: " + productoDTO.getCategoriaId()));
-            producto.setCategoria(categoria);
-        }
-
-        // Añadir nuevas imágenes
-        if (productoDTO.getNewImages() != null) {
-            List<String> imagenesExistentes = producto.getImagenes().stream()
-                    .map(Imagenes::getImageUrl)
-                    .collect(Collectors.toList());
-
-            for (ImagesDTO imagenDTO : productoDTO.getNewImages()) {
-                if (!imagenesExistentes.contains(imagenDTO.getUrl())) {
-                    Imagenes nuevaImagen = new Imagenes();
-                    nuevaImagen.setImageUrl(imagenDTO.getUrl());
-                    nuevaImagen.setProducto(producto);
-                    producto.getImagenes().add(nuevaImagen);
-                }
+        List<ImagesDTO> nuevasImagenesDTO = new ArrayList<>();
+        if (imagenesAñadidas != null && !imagenesAñadidas.isEmpty()) {
+            List<String> urls = imgService.uploadImagesToImgBB(imagenesAñadidas);
+            for (String url : urls) {
+                Imagenes newImage = new Imagenes();
+                newImage.setProducto(producto);
+                newImage.setImageUrl(url);
+                Imagenes savedImage = this.imagenesRepository.save(newImage);
+                nuevasImagenesDTO.add(toDTO(savedImage));
             }
         }
 
-        if (productoDTO.getDeletedImages() != null) {
-            List<String> urlsAEliminar = productoDTO.getDeletedImages().stream()
-                    .map(ImagesDTO::getUrl)
-                    .collect(Collectors.toList());
-
-            producto.getImagenes().removeIf(imagen -> urlsAEliminar.contains(imagen.getImageUrl()));
+        List<ImagesDTO> eliminadasDTO = new ArrayList<>();
+        if (productoDTO.getImagenesEliminadas() != null && !productoDTO.getImagenesEliminadas().isEmpty()) {
+            for (Long image_id : productoDTO.getImagenesEliminadas()) {
+                Imagenes image = this.imagenesRepository.findById(image_id)
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Imagen no encontrada con el id: " + image_id));
+                eliminadasDTO.add(toDTO(image));
+                this.imagenesRepository.delete(image);
+            }
         }
 
-        Productos productoGuardado = productoRepository.save(producto);
+        productoRepository.save(producto);
 
-        ProductoDTO dto = new ProductoDTO();
-        dto.setNombre(productoGuardado.getNombre());
-        dto.setDescripcion(productoGuardado.getDescripcion());
-        dto.setCantidadDisponible(productoGuardado.getCantidadDisponible());
-        dto.setPrecioCompra(productoGuardado.getPrecioCompra());
-        dto.setStockMinimo(productoGuardado.getStockMinimo());
-        dto.setPalabrasClave(productoGuardado.getPalabrasClave());
-        dto.setCategoriaId(productoGuardado.getCategoria().getId());
-
-        List<ImagesDTO> imagenesDTO = productoGuardado.getImagenes().stream()
-                .map(imagen -> {
-                    ImagesDTO dtoImg = new ImagesDTO();
-                    dtoImg.setId(imagen.getId());
-                    dtoImg.setUrl(imagen.getImageUrl());
-                    return dtoImg;
-                })
+        // Obtener imágenes actuales
+        List<Imagenes> imagenesActuales = imagenesRepository.findByProductoId(producto.getId());
+        List<ImagesDTO> urlsActualesDTO = imagenesActuales.stream()
+                .map(this::toDTO)
                 .collect(Collectors.toList());
 
-        dto.setUrlsImagenes(imagenesDTO);
+        // Construir el DTO de respuesta
+        ProductoDTO editedProduct = new ProductoDTO();
+        editedProduct.setNombre(producto.getNombre());
+        editedProduct.setDescripcion(producto.getDescripcion());
+        editedProduct.setCantidadDisponible(producto.getCantidadDisponible());
+        editedProduct.setPrecioCompra(producto.getPrecioCompra());
+        editedProduct.setStockMinimo(producto.getStockMinimo());
+        editedProduct.setPalabrasClave(producto.getPalabrasClave());
 
+        editedProduct.setUrlsImagenes(urlsActualesDTO);
+        editedProduct.setNewImages(nuevasImagenesDTO);
+        editedProduct.setDeletedImages(eliminadasDTO);
+
+        return editedProduct;
+    }
+
+    public ImagesDTO toDTO(Imagenes imagen) {
+        ImagesDTO dto = new ImagesDTO();
+        dto.setId(imagen.getId());
+        dto.setUrl(imagen.getImageUrl());
         return dto;
     }
 
