@@ -17,10 +17,10 @@ import java.util.Map;
 @Service
 public class ImageStorageService {
 
-    @Value("${STORAGE_API_BASE}")   // Ejemplo: https://api.imgbb.com/1/upload
+    @Value("${STORAGE_API_BASE}") 
     private String storageApiBase;
 
-    @Value("${STORAGE_APIKEY}")     // Tu API key solamente
+    @Value("${STORAGE_APIKEY}")   
     private String apikey;
 
     private final RestTemplate restTemplate;
