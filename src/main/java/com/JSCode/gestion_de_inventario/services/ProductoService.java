@@ -220,6 +220,7 @@ public class ProductoService {
         dto.setStockMinimo(producto.getStockMinimo());
         dto.setPalabrasClave(producto.getPalabrasClave());
         dto.setCategoriaId(producto.getCategoria().getId());
+        dto.setProducto_id(id);
 
         List<ImagesDTO> imagenesDTO = producto.getImagenes().stream()
                 .map(imagen -> {

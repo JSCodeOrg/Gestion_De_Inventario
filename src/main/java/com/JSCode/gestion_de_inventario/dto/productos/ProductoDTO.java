@@ -23,5 +23,6 @@ public class ProductoDTO {
     private String palabrasClave;
     private List<ImagesDTO> newImages; 
     private List<ImagesDTO> deletedImages; 
+    private Long producto_id;
 
 }
