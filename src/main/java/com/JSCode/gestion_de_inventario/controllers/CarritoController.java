@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
 import com.JSCode.gestion_de_inventario.security.JwtUtil;
 import com.JSCode.gestion_de_inventario.services.CarritoService;
 
@@ -45,6 +46,18 @@ public class CarritoController {
         AgregarProductoDTO productoAñadido = carritoService.addToCart(producto, token);
 
         return ResponseEntity.ok(new ApiResponse<>("Carrito modificado", productoAñadido, false, 200));
+
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<ObtenerCarritoDTO>> obtenerCarrito(
+            @RequestHeader("Authorization") String authToken) {
+
+        String token = authToken.substring(7);
+
+        ObtenerCarritoDTO carritoObtenido = carritoService.obtenerCarrito(token);
+
+        return ResponseEntity.ok(new ApiResponse<>("Carrito obtenido correctamente", carritoObtenido, false, 200));
 
     }
 

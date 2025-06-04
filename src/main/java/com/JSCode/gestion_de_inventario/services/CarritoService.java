@@ -1,11 +1,14 @@
 package com.JSCode.gestion_de_inventario.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
+import com.JSCode.gestion_de_inventario.dto.carrito.ProductoEnCarritoDTO;
 import com.JSCode.gestion_de_inventario.models.Carrito;
 import com.JSCode.gestion_de_inventario.models.CarritoProducto;
 import com.JSCode.gestion_de_inventario.models.Productos;
@@ -74,4 +77,33 @@ public class CarritoService {
 
     }
 
+    public ObtenerCarritoDTO obtenerCarrito(String token) {
+
+        String userId = jwtUtil.extractUsername(token);
+        Long userIdLong = Long.parseLong(userId);
+
+        Carrito carrito = this.carritoRepository.findByUserId(userIdLong)
+                .orElseThrow(() -> new NotFoundException("No se ha encontrado un carrito asociado a este usuario."));
+
+        List<CarritoProducto> productosCarrito = this.carritoProductoRepository.findAllByCarrito(carrito);
+
+        if (productosCarrito.isEmpty()) {
+            throw new NotFoundException("No se ha encontrado productos en el carrito.");
+        }
+
+        List<ProductoEnCarritoDTO> productosDTO = productosCarrito.stream().map(cp -> {
+            Productos producto = productoRepository.findById(cp.getProductoId())
+                    .orElseThrow(() -> new NotFoundException("Producto no encontrado con id: " + cp.getProductoId()));
+
+            String imageUrl = producto.getImagenes().isEmpty() ? null : producto.getImagenes().get(0).getImageUrl();
+
+            return new ProductoEnCarritoDTO(producto.getNombre(), cp.getCantidad(), imageUrl);
+        }).toList();
+
+        ObtenerCarritoDTO carritoObtenido = new ObtenerCarritoDTO();
+        carritoObtenido.setProductos(productosDTO);
+
+        return carritoObtenido;
+
+    }
 }
