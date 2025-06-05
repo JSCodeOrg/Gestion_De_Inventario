@@ -97,7 +97,7 @@ public class CarritoService {
 
             String imageUrl = producto.getImagenes().isEmpty() ? null : producto.getImagenes().get(0).getImageUrl();
 
-            return new ProductoEnCarritoDTO(producto.getNombre(), cp.getCantidad(), imageUrl);
+            return new ProductoEnCarritoDTO(producto.getId(), producto.getNombre(), producto.getPrecioCompra(), cp.getCantidad(), imageUrl);
         }).toList();
 
         ObtenerCarritoDTO carritoObtenido = new ObtenerCarritoDTO();
