@@ -14,4 +14,8 @@ public interface CarritoProductoRepository
 
         List<CarritoProducto> findAllByCarrito(Carrito carrito);
 
+        Optional<CarritoProducto> findByCarritoAndProductoId(Carrito carrito, Long productoId);
+
+        Optional<CarritoProducto> findByCarrito(Carrito carrito);
+
 }

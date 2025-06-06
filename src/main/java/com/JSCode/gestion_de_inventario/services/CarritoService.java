@@ -3,10 +3,13 @@ package com.JSCode.gestion_de_inventario.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ProductoEnCarritoDTO;
 import com.JSCode.gestion_de_inventario.models.Carrito;
@@ -97,7 +100,8 @@ public class CarritoService {
 
             String imageUrl = producto.getImagenes().isEmpty() ? null : producto.getImagenes().get(0).getImageUrl();
 
-            return new ProductoEnCarritoDTO(producto.getId(), producto.getNombre(), producto.getPrecioCompra(), cp.getCantidad(), imageUrl);
+            return new ProductoEnCarritoDTO(producto.getId(), producto.getNombre(), producto.getPrecioCompra(),
+                    cp.getCantidad(), imageUrl);
         }).toList();
 
         ObtenerCarritoDTO carritoObtenido = new ObtenerCarritoDTO();
@@ -105,5 +109,62 @@ public class CarritoService {
 
         return carritoObtenido;
 
+    }
+
+    public ApiResponse<Integer> editarCarrito(String authToken, EditarCarritoDTO carritoEditado) {
+
+        String user_id = jwtUtil.extractUsername(authToken);
+
+        Long user_id_long = Long.parseLong(user_id);
+
+        Carrito user_carrito = this.carritoRepository.findByUserId(user_id_long)
+                .orElseThrow(() -> new NotFoundException("No se ha encontrado un carrito asociado al usuario"));
+
+        List<ProductoEnCarritoDTO> productosEditados = carritoEditado.getProductosEditados();
+
+        for (ProductoEnCarritoDTO producto : productosEditados) {
+            Long producto_id = producto.getId();
+
+            Productos producto_busqueda = this.productoRepository.findById(producto_id)
+                    .orElseThrow(() -> new NotFoundException("No se ha encontrado el producto solicitado"));
+
+            if (producto.getCantidad() > producto_busqueda.getCantidadDisponible()) {
+                return new ApiResponse<Integer>(
+                        "El producto \"" + producto_busqueda.getNombre()
+                                + "\" excede el límite de existencias disponibles: ",
+                        producto_busqueda.getCantidadDisponible(),
+                        true,
+                        400);
+            }
+
+            CarritoProducto carritoProducto = this.carritoProductoRepository
+                    .findByCarritoAndProductoId(user_carrito, producto_id)
+                    .orElseThrow(() -> new NotFoundException("No se ha encontrado el producto en el carrito"));
+
+            carritoProducto.setCantidad(producto.getCantidad());
+
+            this.carritoProductoRepository.save(carritoProducto);
+
+        }
+
+        List<ProductoEnCarritoDTO> productosEliminados = carritoEditado.getProductosEliminados();
+
+        if (productosEliminados.size() > 0) {
+            for (ProductoEnCarritoDTO producto_eliminar : productosEliminados) {
+
+                Long producto_id = producto_eliminar.getId();
+
+                CarritoProducto carritoProducto = this.carritoProductoRepository
+                        .findByCarritoAndProductoId(user_carrito, producto_id)
+                        .orElseThrow(() -> new NotFoundException(
+                                "No se encontró el producto que desea elimninar en el carrito"));
+
+                this.carritoProductoRepository.delete(carritoProducto);
+
+            }
+
+        }
+
+        return new ApiResponse<Integer>("Carrito editado correctamente", false, 200);
     }
 }

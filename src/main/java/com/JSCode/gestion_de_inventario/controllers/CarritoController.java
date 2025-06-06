@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
 import com.JSCode.gestion_de_inventario.security.JwtUtil;
 import com.JSCode.gestion_de_inventario.services.CarritoService;
@@ -60,5 +62,19 @@ public class CarritoController {
         return ResponseEntity.ok(new ApiResponse<>("Carrito obtenido correctamente", carritoObtenido, false, 200));
 
     }
+
+    @PutMapping()
+    public ResponseEntity<ApiResponse<Integer>> modificarCarrito(@RequestHeader("Authorization") String authToken, @RequestBody EditarCarritoDTO carritoEditado){
+
+        System.out.println(carritoEditado);
+
+        String token = authToken.substring(7);
+
+        ApiResponse<Integer> response = carritoService.editarCarrito(token, carritoEditado);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }
