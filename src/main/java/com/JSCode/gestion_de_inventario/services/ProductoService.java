@@ -19,6 +19,7 @@ import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
+import com.JSCode.gestion_de_inventario.dto.productos.ExistenciasDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
@@ -29,6 +30,8 @@ import com.JSCode.gestion_de_inventario.models.Productos;
 import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
 import com.JSCode.gestion_de_inventario.repositories.ImagenesRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
+
+import jakarta.ws.rs.NotFoundException;
 
 @Service
 public class ProductoService {
@@ -330,4 +333,16 @@ public class ProductoService {
         return responseDTO;
     }
 
+    public Boolean verificarExistencias(List<ExistenciasDTO> productos) {
+
+        for (ExistenciasDTO producto : productos) {
+            Productos producto_encontrado = this.productoRepository.findById(producto.getProductoId())
+                    .orElseThrow(() -> new NotFoundException(
+                            "No se ha encontrado el producto con el id" + producto.getProductoId()));
+            if (producto_encontrado.getCantidadDisponible() < producto.getCantidad()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
