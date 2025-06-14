@@ -31,8 +31,6 @@ import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
 import com.JSCode.gestion_de_inventario.repositories.ImagenesRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
 
-import jakarta.ws.rs.NotFoundException;
-
 @Service
 public class ProductoService {
 
@@ -336,12 +334,16 @@ public class ProductoService {
     public Boolean verificarExistencias(List<ExistenciasDTO> productos) {
 
         for (ExistenciasDTO producto : productos) {
-            Productos producto_encontrado = this.productoRepository.findById(producto.getProductoId())
-                    .orElseThrow(() -> new NotFoundException(
-                            "No se ha encontrado el producto con el id" + producto.getProductoId()));
+            System.out.println("id recibido" + producto.getIdProducto());
+            System.out.println("cantidad recibida" + producto.getCantidad());
+
+            Productos producto_encontrado = this.productoRepository.findById(producto.getIdProducto())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "No se ha encontrado el producto con el id" + producto.getIdProducto()));
             if (producto_encontrado.getCantidadDisponible() < producto.getCantidad()) {
                 return false;
             }
+
         }
         return true;
     }
