@@ -2,8 +2,8 @@
 /* Los truncate son para reiniciar los IDS de las tablas, por si crean datos en la bd y los borran, vuelvan a empezar desde 0 las primary key, 
 mientras tengan datos los dejan comentados*/
 
-/*
 
+/*
 TRUNCATE TABLE productos RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categoria RESTART IDENTITY CASCADE;
 TRUNCATE TABLE imagenes RESTART IDENTITY CASCADE;
