@@ -2,12 +2,9 @@ package com.JSCode.gestion_de_inventario.services;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.Response.Response;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
@@ -111,7 +108,7 @@ public class CarritoService {
 
     }
 
-    public ApiResponse<Integer> editarCarrito(String authToken, EditarCarritoDTO carritoEditado) {
+    public Response<Integer> editarCarrito(String authToken, EditarCarritoDTO carritoEditado) {
 
         String user_id = jwtUtil.extractUsername(authToken);
 
@@ -129,7 +126,7 @@ public class CarritoService {
                     .orElseThrow(() -> new NotFoundException("No se ha encontrado el producto solicitado"));
 
             if (producto.getCantidad() > producto_busqueda.getCantidadDisponible()) {
-                return new ApiResponse<Integer>(
+                return new Response<Integer>(
                         "El producto \"" + producto_busqueda.getNombre()
                                 + "\" excede el límite de existencias disponibles: ",
                         producto_busqueda.getCantidadDisponible(),
@@ -165,6 +162,6 @@ public class CarritoService {
 
         }
 
-        return new ApiResponse<Integer>("Carrito editado correctamente", false, 200);
+        return new Response<Integer>("Carrito editado correctamente", false, 200);
     }
 }

@@ -31,7 +31,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/productos/filtrar", "/productos/buscar", "/productos/categorias",
-                                "/productos/obtener/categoria", "/productos/ver/**")
+                                "/productos/obtener/categoria", "/productos/ver/**","/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

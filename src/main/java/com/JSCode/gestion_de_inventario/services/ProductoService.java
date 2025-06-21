@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.Response.Response;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
@@ -113,11 +113,11 @@ public class ProductoService {
         });
     }
 
-    public ApiResponse<String> productoEliminar(Long id) {
+    public Response<String> productoEliminar(Long id) {
         productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         productoRepository.deleteById(id);
-        return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
+        return new Response<String>("Producto Eliminado con Exito", false, 200);
     }
 
     public ProductoDTO actualizarProducto(EditarProductoDTO productoDTO, Long id,
@@ -199,14 +199,14 @@ public class ProductoService {
         return dto;
     }
 
-    public ApiResponse<String> agregarUnidadesProducto(Long id, AgregarCantidadDTO cantidadDTO) {
+    public Response<String> agregarUnidadesProducto(Long id, AgregarCantidadDTO cantidadDTO) {
 
         Productos producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         int nuevaCantidad = producto.getCantidadDisponible() + cantidadDTO.getCantidad();
         producto.setCantidadDisponible(nuevaCantidad);
         productoRepository.save(producto);
-        return new ApiResponse<>("Unidades agregadas con éxito", false, 200);
+        return new Response<>("Unidades agregadas con éxito", false, 200);
     }
 
     public ProductoDTO verProducto(Long id) {
