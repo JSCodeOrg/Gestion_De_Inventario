@@ -3,7 +3,6 @@ package com.JSCode.gestion_de_inventario.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +19,8 @@ import com.JSCode.gestion_de_inventario.repositories.CarritoRepository;
 import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
 import com.JSCode.gestion_de_inventario.security.JwtUtil;
 
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class CarritoService {
@@ -46,10 +45,10 @@ public class CarritoService {
         // Voy a asumir que el usuario existe jkasj
 
         Productos product = this.productoRepository.findById(producto.getId_producto())
-                .orElseThrow(() -> new NotFoundException("El producto solicitado no fué encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El producto solicitado no fué encontrado"));
 
         if (product.getCantidadDisponible() < producto.getCantidad()) {
-            throw new BadRequestException("La cantidad solicitada excede la cantidad disponible");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad solicitada excede la cantidad disponible");
         }
 
         Carrito carrito = carritoRepository.findByUserId(user_id_parsed)
@@ -86,17 +85,17 @@ public class CarritoService {
         Long userIdLong = Long.parseLong(userId);
 
         Carrito carrito = this.carritoRepository.findByUserId(userIdLong)
-                .orElseThrow(() -> new NotFoundException("No se ha encontrado un carrito asociado a este usuario."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha encontrado un carrito asociado a este usuario."));
 
         List<CarritoProducto> productosCarrito = this.carritoProductoRepository.findAllByCarrito(carrito);
 
         if (productosCarrito.isEmpty()) {
-            throw new NotFoundException("No se ha encontrado productos en el carrito.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha encontrado productos en el carrito.");
         }
 
         List<ProductoEnCarritoDTO> productosDTO = productosCarrito.stream().map(cp -> {
             Productos producto = productoRepository.findById(cp.getProductoId())
-                    .orElseThrow(() -> new NotFoundException("Producto no encontrado con id: " + cp.getProductoId()));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado con id: " + cp.getProductoId()));
 
             String imageUrl = producto.getImagenes().isEmpty() ? null : producto.getImagenes().get(0).getImageUrl();
 
@@ -118,7 +117,7 @@ public class CarritoService {
         Long user_id_long = Long.parseLong(user_id);
 
         Carrito user_carrito = this.carritoRepository.findByUserId(user_id_long)
-                .orElseThrow(() -> new NotFoundException("No se ha encontrado un carrito asociado al usuario"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha encontrado un carrito asociado al usuario"));
 
         List<ProductoEnCarritoDTO> productosEditados = carritoEditado.getProductosEditados();
 
@@ -126,7 +125,7 @@ public class CarritoService {
             Long producto_id = producto.getId();
 
             Productos producto_busqueda = this.productoRepository.findById(producto_id)
-                    .orElseThrow(() -> new NotFoundException("No se ha encontrado el producto solicitado"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha encontrado el producto solicitado"));
 
             if (producto.getCantidad() > producto_busqueda.getCantidadDisponible()) {
                 return new ApiResponse<Integer>(
@@ -139,7 +138,7 @@ public class CarritoService {
 
             CarritoProducto carritoProducto = this.carritoProductoRepository
                     .findByCarritoAndProductoId(user_carrito, producto_id)
-                    .orElseThrow(() -> new NotFoundException("No se ha encontrado el producto en el carrito"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se ha encontrado el producto en el carrito"));
 
             carritoProducto.setCantidad(producto.getCantidad());
 
@@ -156,8 +155,7 @@ public class CarritoService {
 
                 CarritoProducto carritoProducto = this.carritoProductoRepository
                         .findByCarritoAndProductoId(user_carrito, producto_id)
-                        .orElseThrow(() -> new NotFoundException(
-                                "No se encontró el producto que desea elimninar en el carrito"));
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró el producto que desea elimninar en el carrito"));
 
                 this.carritoProductoRepository.delete(carritoProducto);
 

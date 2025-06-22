@@ -58,5 +58,16 @@ public class Productos {
     private String palabrasClave;
 
     @Column()
-    private LocalDateTime deletedAt; 
+    private LocalDateTime deletedAt;
+    private long idProducto;
+
+    public void setIdProducto(long idProducto) {
+        // TODO Auto-generated method stub
+        this.id = idProducto;
+        this.idProducto = idProducto;
+    } 
+    public long getIdProducto() {
+        // TODO Auto-generated method stub
+        return this.id;
+    }
 }
