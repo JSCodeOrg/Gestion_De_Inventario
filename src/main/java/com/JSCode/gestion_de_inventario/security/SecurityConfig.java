@@ -1,7 +1,5 @@
 package com.JSCode.gestion_de_inventario.security;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
