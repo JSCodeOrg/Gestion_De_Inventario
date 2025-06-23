@@ -116,8 +116,12 @@ public class ProductoService {
     public ApiResponse<String> productoEliminar(Long id) {
         productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
-        productoRepository.deleteById(id);
-        return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
+        try {
+            productoRepository.deleteById(id);
+            return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
+        } catch (Exception e) {
+            throw new RuntimeException("Ha ocurrido un error mientras se eliminaba el producto." + e.getMessage());
+        }
     }
 
     public ProductoDTO actualizarProducto(EditarProductoDTO productoDTO, Long id,
@@ -239,10 +243,29 @@ public class ProductoService {
 
     public List<ProductoCarruselDTO> obtenerProductosCarrusel(Long categoria_id) {
 
+        System.out.println("Inicio de busqueda");
+        System.out.println("Inicio de busqueda");
+        System.out.println("Inicio de busqueda");
+        System.out.println("Inicio de busqueda");
+        System.out.println("Inicio de busqueda");
+        System.out.println("Inicio de busqueda");
+
         Categoria categoria = this.categoriaRepository.findById(categoria_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + categoria_id));
 
+        System.out.println("Fin de busqueda");
+        System.out.println("Fin de busqueda");
+        System.out.println("Fin de busqueda");
+        System.out.println("Fin de busqueda");
+        System.out.println("Fin de busqueda");
+
         List<Productos> productos = this.productoRepository.findTop15ByCategoriaOrderByIdAsc(categoria);
+
+        System.out.println("Ordenamiento");
+        System.out.println("Ordenamiento");
+        System.out.println("Ordenamiento");
+        System.out.println("Ordenamiento");
+        System.out.println("Ordenamiento");
 
         return productos.stream()
                 .map(producto -> {
