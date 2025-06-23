@@ -1,10 +1,10 @@
-package com.JSCode.gestion_de_inventario.dto.productos;
+package com.jscode.gestion_de_inventario.dto.productos;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
-import com.JSCode.gestion_de_inventario.models.Categoria;
+import com.jscode.gestion_de_inventario.dto.ImagesDTO;
+import com.jscode.gestion_de_inventario.models.Categoria;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

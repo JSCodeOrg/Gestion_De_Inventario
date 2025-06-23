@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.security;
+package com.jscode.gestion_de_inventario.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.models;
+package com.jscode.gestion_de_inventario.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

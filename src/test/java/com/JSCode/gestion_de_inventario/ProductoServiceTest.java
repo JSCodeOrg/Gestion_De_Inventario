@@ -1,17 +1,17 @@
 package com.JSCode.gestion_de_inventario;
 
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
-import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
-import com.JSCode.gestion_de_inventario.models.Categoria;
-import com.JSCode.gestion_de_inventario.models.Imagenes;
-import com.JSCode.gestion_de_inventario.models.Productos;
-import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
-import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import com.jscode.gestion_de_inventario.dto.productos.ProductoDTO;
+import com.jscode.gestion_de_inventario.exceptions.ResourceNotFoundException;
+import com.jscode.gestion_de_inventario.models.Categoria;
+import com.jscode.gestion_de_inventario.models.Imagenes;
+import com.jscode.gestion_de_inventario.models.Productos;
+import com.jscode.gestion_de_inventario.repositories.CategoriaRepository;
+import com.jscode.gestion_de_inventario.repositories.ProductoRepository;
+import com.jscode.gestion_de_inventario.services.ProductoService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;

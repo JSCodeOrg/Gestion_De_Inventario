@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.security;
+package com.jscode.gestion_de_inventario.security;
 
 public enum RoleEnum {
     usuario(1), repartidor(2), administrador(3);

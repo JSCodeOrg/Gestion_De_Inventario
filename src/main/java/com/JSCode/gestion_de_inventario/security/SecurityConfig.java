@@ -1,6 +1,4 @@
-package com.JSCode.gestion_de_inventario.security;
-
-import java.util.List;
+package com.jscode.gestion_de_inventario.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

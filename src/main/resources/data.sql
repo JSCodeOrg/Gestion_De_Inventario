@@ -1,14 +1,8 @@
-/*Esto permite insertar datos de prueba, cuando los tengan, pueden comentar el codigo*/
+-- Esto permite insertar datos de prueba, cuando los tengan, pueden comentar el codigo
+
 /* Los truncate son para reiniciar los IDS de las tablas, por si crean datos en la bd y los borran, vuelvan a empezar desde 0 las primary key, 
 mientras tengan datos los dejan comentados*/
-
 /*
-
-TRUNCATE TABLE productos RESTART IDENTITY CASCADE;
-TRUNCATE TABLE categoria RESTART IDENTITY CASCADE;
-TRUNCATE TABLE imagenes RESTART IDENTITY CASCADE;
-
-
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
@@ -182,5 +176,4 @@ INSERT INTO imagenes (producto_id, image_url) VALUES
 (78, 'https://example.com/images/tobilleras_peso.jpg'),
 (79, 'https://example.com/images/pesa_muneca.jpg'),
 (80, 'https://example.com/images/bolso_deportivo.jpg');
-
 */

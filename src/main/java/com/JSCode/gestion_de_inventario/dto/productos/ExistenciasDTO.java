@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.dto.productos;
+package com.jscode.gestion_de_inventario.dto.productos;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.jscode.gestion_de_inventario.controllers;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.JSCode.gestion_de_inventario.dto.productos.ExistenciasDTO;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
+import com.jscode.gestion_de_inventario.dto.productos.ExistenciasDTO;
+import com.jscode.gestion_de_inventario.services.ProductoService;
 
 @RestController
 @RequestMapping("/existencias")
@@ -25,7 +25,7 @@ public class InventarioController {
     @PostMapping
     public ResponseEntity<Boolean> verificarExistencias(@RequestBody List<ExistenciasDTO> productos, @RequestHeader("Authorization") String authToken) {
 
-        Boolean isEnoughInventory = productoService.verificarExistencias(productos);
+        boolean isEnoughInventory = productoService.verificarExistencias(productos);
 
         if (!isEnoughInventory) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(false);

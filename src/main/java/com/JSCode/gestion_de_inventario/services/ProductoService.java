@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.services;
+package com.jscode.gestion_de_inventario.services;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,25 +11,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.jscode.gestion_de_inventario.dto.ImagesDTO;
+import com.jscode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.jscode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.CategoriaDTO;
+import com.jscode.gestion_de_inventario.dto.productos.EditarProductoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ExistenciasDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
+import com.jscode.gestion_de_inventario.dto.response.ApiResponse;
+import com.jscode.gestion_de_inventario.exceptions.ResourceNotFoundException;
+import com.jscode.gestion_de_inventario.models.Categoria;
+import com.jscode.gestion_de_inventario.models.Imagenes;
+import com.jscode.gestion_de_inventario.models.Productos;
+import com.jscode.gestion_de_inventario.repositories.CategoriaRepository;
+import com.jscode.gestion_de_inventario.repositories.ImagenesRepository;
+import com.jscode.gestion_de_inventario.repositories.ProductoRepository;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ExistenciasDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
-import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
-import com.JSCode.gestion_de_inventario.models.Categoria;
-import com.JSCode.gestion_de_inventario.models.Imagenes;
-import com.JSCode.gestion_de_inventario.models.Productos;
-import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
-import com.JSCode.gestion_de_inventario.repositories.ImagenesRepository;
-import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
 
 @Service
 public class ProductoService {
@@ -45,6 +46,8 @@ public class ProductoService {
 
     @Autowired
     private ImageStorageService imgService;
+
+    String notfoundtext = "Producto no encontrado con ID: ";
 
     public List<ProductoResumenDTO> filtrarProductos(String categoria, BigDecimal precioMin,
             BigDecimal precioMax) {
@@ -115,7 +118,7 @@ public class ProductoService {
 
     public ApiResponse<String> productoEliminar(Long id) {
         productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(notfoundtext + id));
         productoRepository.deleteById(id);
         return new ApiResponse<String>("Producto Eliminado con Exito", false, 200);
     }
@@ -124,7 +127,7 @@ public class ProductoService {
             List<MultipartFile> imagenesAñadidas) {
 
         Productos producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(notfoundtext + id));
 
         if (productoDTO.getNombre() != null) {
             producto.setNombre(productoDTO.getNombre());
@@ -202,7 +205,7 @@ public class ProductoService {
     public ApiResponse<String> agregarUnidadesProducto(Long id, AgregarCantidadDTO cantidadDTO) {
 
         Productos producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(notfoundtext + id));
         int nuevaCantidad = producto.getCantidadDisponible() + cantidadDTO.getCantidad();
         producto.setCantidadDisponible(nuevaCantidad);
         productoRepository.save(producto);
@@ -211,7 +214,7 @@ public class ProductoService {
 
     public ProductoDTO verProducto(Long id) {
         Productos producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(notfoundtext + id));
 
         ProductoDTO dto = new ProductoDTO();
         dto.setNombre(producto.getNombre());
@@ -334,13 +337,10 @@ public class ProductoService {
     public Boolean verificarExistencias(List<ExistenciasDTO> productos) {
 
         for (ExistenciasDTO producto : productos) {
-            System.out.println("id recibido" + producto.getIdProducto());
-            System.out.println("cantidad recibida" + producto.getCantidad());
-
-            Productos producto_encontrado = this.productoRepository.findById(producto.getIdProducto())
+            Productos productoencontrado = this.productoRepository.findById(producto.getIdProducto())
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "No se ha encontrado el producto con el id" + producto.getIdProducto()));
-            if (producto_encontrado.getCantidadDisponible() < producto.getCantidad()) {
+            if (productoencontrado.getCantidadDisponible() < producto.getCantidad()) {
                 return false;
             }
 

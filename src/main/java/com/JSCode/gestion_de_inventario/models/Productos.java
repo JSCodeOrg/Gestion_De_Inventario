@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.models;
+package com.jscode.gestion_de_inventario.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

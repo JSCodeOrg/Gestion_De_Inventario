@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.jscode.gestion_de_inventario.controllers;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,18 +18,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.jscode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
+import com.jscode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.CategoriaDTO;
+import com.jscode.gestion_de_inventario.dto.productos.EditarProductoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoDTO;
+import com.jscode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
+import com.jscode.gestion_de_inventario.dto.response.ApiResponse;
+import com.jscode.gestion_de_inventario.services.ImageStorageService;
+import com.jscode.gestion_de_inventario.services.ProductoService;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
-import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
-import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
-import com.JSCode.gestion_de_inventario.services.ImageStorageService;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
 
 @RestController
 @RequestMapping("/productos")
@@ -63,9 +65,9 @@ public class ProductosController {
     @PreAuthorize("hasRole('administrador')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ApiResponse<ProductoDTO>> actualizarProducto(@PathVariable Long id,
-        @RequestPart("producto") EditarProductoDTO productoInfo, @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenesAñadidas) {
+        @RequestPart("producto") EditarProductoDTO productoInfo, @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenesañadidas) {
 
-        ProductoDTO editedProduct = productoService.actualizarProducto(productoInfo, id, imagenesAñadidas);
+        ProductoDTO editedProduct = productoService.actualizarProducto(productoInfo, id, imagenesañadidas);
 
         return ResponseEntity.ok(new ApiResponse<>("Producto actualizado con éxito", editedProduct, false, 200));
 
@@ -94,8 +96,8 @@ public class ProductosController {
     }
 
     @GetMapping("/obtener/categoria")
-    public ResponseEntity<List<ProductoCarruselDTO>> obtenerPorCategoria(@RequestParam Long categoria_id) {
-        List<ProductoCarruselDTO> productos = this.productoService.obtenerProductosCarrusel(categoria_id);
+    public ResponseEntity<List<ProductoCarruselDTO>> obtenerPorCategoria(@RequestParam Long categoriaid) {
+        List<ProductoCarruselDTO> productos = this.productoService.obtenerProductosCarrusel(categoriaid);
         return ResponseEntity.ok(productos);
     }
 

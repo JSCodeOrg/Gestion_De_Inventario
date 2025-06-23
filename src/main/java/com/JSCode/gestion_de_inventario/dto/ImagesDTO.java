@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.dto;
+package com.jscode.gestion_de_inventario.dto;
 
 import lombok.Getter;
 import lombok.Setter;

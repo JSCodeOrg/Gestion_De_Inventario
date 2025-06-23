@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.jscode.gestion_de_inventario.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
-import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
-import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
-import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
-import com.JSCode.gestion_de_inventario.security.JwtUtil;
-import com.JSCode.gestion_de_inventario.services.CarritoService;
+import com.jscode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
+import com.jscode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
+import com.jscode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
+import com.jscode.gestion_de_inventario.dto.response.ApiResponse;
+import com.jscode.gestion_de_inventario.security.JwtUtil;
+import com.jscode.gestion_de_inventario.services.CarritoService;
 
 @RestController
 @RequestMapping("/carrito")
@@ -45,9 +45,9 @@ public class CarritoController {
                     .body(new ApiResponse<>("Token no válido", false, 0));
         }
 
-        AgregarProductoDTO productoAñadido = carritoService.addToCart(producto, token);
+        AgregarProductoDTO productoañadido = carritoService.addToCart(producto, token);
 
-        return ResponseEntity.ok(new ApiResponse<>("Carrito modificado", productoAñadido, false, 200));
+        return ResponseEntity.ok(new ApiResponse<>("Carrito modificado", productoañadido, false, 200));
 
     }
 
@@ -65,8 +65,6 @@ public class CarritoController {
 
     @PutMapping()
     public ResponseEntity<ApiResponse<Integer>> modificarCarrito(@RequestHeader("Authorization") String authToken, @RequestBody EditarCarritoDTO carritoEditado){
-
-        System.out.println(carritoEditado);
 
         String token = authToken.substring(7);
 

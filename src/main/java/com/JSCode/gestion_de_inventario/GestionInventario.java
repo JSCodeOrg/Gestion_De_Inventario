@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario;
+package com.jscode.gestion_de_inventario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
