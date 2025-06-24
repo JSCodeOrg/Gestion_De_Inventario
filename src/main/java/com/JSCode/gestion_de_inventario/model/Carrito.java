@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.models;
+package com.JSCode.gestion_de_inventario.model;
 
 import java.util.ArrayList;
 import java.util.List;

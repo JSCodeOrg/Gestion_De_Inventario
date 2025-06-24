@@ -1,8 +1,7 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.JSCode.gestion_de_inventario.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
@@ -28,8 +27,10 @@ import com.JSCode.gestion_de_inventario.dto.productos.EditarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
-import com.JSCode.gestion_de_inventario.services.ImageStorageService;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
+import com.JSCode.gestion_de_inventario.dto.productos.StockUpdateRequest;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
+import com.JSCode.gestion_de_inventario.service.ImageStorageService;
+import com.JSCode.gestion_de_inventario.service.ProductoService;
 
 @RestController
 @RequestMapping("/productos")
@@ -59,11 +60,11 @@ public class ProductosController {
         return ResponseEntity.ok(productos);
     }
 
-
     @PreAuthorize("hasRole('administrador')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ApiResponse<ProductoDTO>> actualizarProducto(@PathVariable Long id,
-        @RequestPart("producto") EditarProductoDTO productoInfo, @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenesAñadidas) {
+            @RequestPart("producto") EditarProductoDTO productoInfo,
+            @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenesAñadidas) {
 
         ProductoDTO editedProduct = productoService.actualizarProducto(productoInfo, id, imagenesAñadidas);
 
@@ -74,10 +75,15 @@ public class ProductosController {
     @PreAuthorize("hasRole('administrador')")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<ApiResponse<ApiResponse<String>>> eliminarProducto(@PathVariable Long id) {
-        ApiResponse<String> productoEliminar = productoService.productoEliminar(id);
 
-        return ResponseEntity.ok(new ApiResponse<>(null, productoEliminar, false, 200));
+        try {
+            ApiResponse<String> productoEliminar = productoService.productoEliminar(id);
 
+            return ResponseEntity.ok(new ApiResponse<>(null, productoEliminar, false, 200));
+
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ApiResponse<>("Ha ocurrido un error al eliminar el producto.", true, 500));
+        }
     }
 
     @PostMapping("/agregar/{id}")
@@ -112,4 +118,5 @@ public class ProductosController {
         ProductoDTO productoAgregado = productoService.agregarProductoNuevo(productoDTO);
         return ResponseEntity.ok(new ApiResponse<>("Producto agregado con éxito", productoAgregado, false, 201));
     }
+
 }

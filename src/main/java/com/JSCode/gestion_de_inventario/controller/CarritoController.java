@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.JSCode.gestion_de_inventario.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
 import com.JSCode.gestion_de_inventario.security.JwtUtil;
-import com.JSCode.gestion_de_inventario.services.CarritoService;
+import com.JSCode.gestion_de_inventario.service.CarritoService;
 
 @RestController
 @RequestMapping("/carrito")

@@ -1,11 +1,11 @@
-package com.JSCode.gestion_de_inventario.exceptions;
+package com.JSCode.gestion_de_inventario.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.exceptions;
+package com.JSCode.gestion_de_inventario.exception;
 
 import org.springframework.http.HttpStatus;
 

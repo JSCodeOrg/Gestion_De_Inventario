@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.services;
+package com.JSCode.gestion_de_inventario.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,17 +7,17 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
 import com.JSCode.gestion_de_inventario.dto.carrito.AgregarProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.EditarCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ObtenerCarritoDTO;
 import com.JSCode.gestion_de_inventario.dto.carrito.ProductoEnCarritoDTO;
-import com.JSCode.gestion_de_inventario.models.Carrito;
-import com.JSCode.gestion_de_inventario.models.CarritoProducto;
-import com.JSCode.gestion_de_inventario.models.Productos;
-import com.JSCode.gestion_de_inventario.repositories.CarritoProductoRepository;
-import com.JSCode.gestion_de_inventario.repositories.CarritoRepository;
-import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
+import com.JSCode.gestion_de_inventario.model.Carrito;
+import com.JSCode.gestion_de_inventario.model.CarritoProducto;
+import com.JSCode.gestion_de_inventario.model.Productos;
+import com.JSCode.gestion_de_inventario.repository.CarritoProductoRepository;
+import com.JSCode.gestion_de_inventario.repository.CarritoRepository;
+import com.JSCode.gestion_de_inventario.repository.ProductoRepository;
 import com.JSCode.gestion_de_inventario.security.JwtUtil;
 
 import jakarta.ws.rs.BadRequestException;
