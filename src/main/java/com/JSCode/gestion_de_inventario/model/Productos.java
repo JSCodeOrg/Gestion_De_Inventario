@@ -59,4 +59,13 @@ public class Productos {
 
     @Column()
     private LocalDateTime deletedAt; 
+    private long idProducto;
+
+     public void setIdProducto(long idProducto) {
+        this.id = idProducto;
+        this.idProducto = idProducto;
+    } 
+    public long getIdProducto() {
+        return this.id;
+    }
 }
