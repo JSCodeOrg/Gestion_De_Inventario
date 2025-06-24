@@ -1,20 +1,24 @@
-package com.JSCode.gestion_de_inventario.services;
+package com.JSCode.gestion_de_inventario.service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+import com.JSCode.gestion_de_inventario.dto.images.ImagesDTO;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+
+import com.JSCode.gestion_de_inventario.dto.productos.ActualizarStockDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
@@ -23,16 +27,21 @@ import com.JSCode.gestion_de_inventario.dto.productos.ExistenciasDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
-import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
-import com.JSCode.gestion_de_inventario.models.Categoria;
-import com.JSCode.gestion_de_inventario.models.Imagenes;
-import com.JSCode.gestion_de_inventario.models.Productos;
-import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
-import com.JSCode.gestion_de_inventario.repositories.ImagenesRepository;
-import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
+import com.JSCode.gestion_de_inventario.exception.ResourceNotFoundException;
+import com.JSCode.gestion_de_inventario.model.Categoria;
+import com.JSCode.gestion_de_inventario.model.Imagenes;
+import com.JSCode.gestion_de_inventario.model.Productos;
+import com.JSCode.gestion_de_inventario.repository.CategoriaRepository;
+import com.JSCode.gestion_de_inventario.repository.ImagenesRepository;
+import com.JSCode.gestion_de_inventario.repository.ProductoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ProductoService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductoService.class);
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -369,5 +378,36 @@ public class ProductoService {
 
         }
         return true;
+    }
+
+    @Transactional
+    public void descontarStockLote(List<ActualizarStockDTO> productos) {
+        logger.info("🔄 Iniciando descuento de stock para {} productos", productos.size());
+
+        try {
+            for (ActualizarStockDTO dto : productos) {
+                logger.debug("➡️ Procesando producto ID: {}, cantidad a descontar: {}", dto.getProductoId(), dto.getCantidad());
+
+                Productos producto = productoRepository.findById(dto.getProductoId())
+                        .orElseThrow(() -> {
+                            String msg = "❌ Producto no encontrado: " + dto.getProductoId();
+                            logger.error(msg);
+                            return new RuntimeException(msg);
+                        });
+
+                if (producto.getCantidadDisponible() < dto.getCantidad()) {
+                    String msg = "⚠️ Stock insuficiente para el producto: " + producto.getNombre();
+                    logger.warn(msg);
+                    throw new RuntimeException(msg);
+                }
+
+                producto.setCantidadDisponible(producto.getCantidadDisponible() - dto.getCantidad());
+                productoRepository.save(producto);
+                logger.info("✅ Stock actualizado para producto ID {}: nuevo stock {}", producto.getId(), producto.getCantidadDisponible());
+            }
+        } catch (RuntimeException e) {
+            logger.error("🔥 Error al descontar stock: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al descontar stock: " + e.getMessage());
+        }
     }
 }

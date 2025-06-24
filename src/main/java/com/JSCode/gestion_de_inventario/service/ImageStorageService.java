@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.services;
+package com.JSCode.gestion_de_inventario.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

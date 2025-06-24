@@ -182,5 +182,4 @@ INSERT INTO imagenes (producto_id, image_url) VALUES
 (78, 'https://example.com/images/tobilleras_peso.jpg'),
 (79, 'https://example.com/images/pesa_muneca.jpg'),
 (80, 'https://example.com/images/bolso_deportivo.jpg');
-
 */

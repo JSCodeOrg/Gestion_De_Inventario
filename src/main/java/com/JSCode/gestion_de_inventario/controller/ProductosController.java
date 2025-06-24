@@ -1,4 +1,4 @@
-package com.JSCode.gestion_de_inventario.controllers;
+package com.JSCode.gestion_de_inventario.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import com.JSCode.gestion_de_inventario.dto.Response.ApiResponse;
+
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarCantidadDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.AgregarProductNuevoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.CategoriaDTO;
@@ -28,8 +28,9 @@ import com.JSCode.gestion_de_inventario.dto.productos.ProductoCarruselDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoResumenDTO;
 import com.JSCode.gestion_de_inventario.dto.productos.StockUpdateRequest;
-import com.JSCode.gestion_de_inventario.services.ImageStorageService;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
+import com.JSCode.gestion_de_inventario.dto.response.ApiResponse;
+import com.JSCode.gestion_de_inventario.service.ImageStorageService;
+import com.JSCode.gestion_de_inventario.service.ProductoService;
 
 @RestController
 @RequestMapping("/productos")

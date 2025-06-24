@@ -2,7 +2,7 @@ package com.JSCode.gestion_de_inventario.dto.carrito;
 
 import java.util.List;
 
-import com.JSCode.gestion_de_inventario.models.CarritoProducto;
+import com.JSCode.gestion_de_inventario.model.CarritoProducto;
 
 import lombok.Getter;
 import lombok.Setter;

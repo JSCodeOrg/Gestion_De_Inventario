@@ -3,8 +3,8 @@ package com.JSCode.gestion_de_inventario.dto.productos;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.JSCode.gestion_de_inventario.dto.ImagesDTO;
-import com.JSCode.gestion_de_inventario.models.Categoria;
+import com.JSCode.gestion_de_inventario.dto.images.ImagesDTO;
+import com.JSCode.gestion_de_inventario.model.Categoria;
 
 import lombok.Getter;
 import lombok.Setter;

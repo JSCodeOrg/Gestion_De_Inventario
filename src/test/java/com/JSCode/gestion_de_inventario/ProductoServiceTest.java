@@ -1,13 +1,13 @@
 package com.JSCode.gestion_de_inventario;
 
 import com.JSCode.gestion_de_inventario.dto.productos.ProductoDTO;
-import com.JSCode.gestion_de_inventario.exceptions.ResourceNotFoundException;
-import com.JSCode.gestion_de_inventario.models.Categoria;
-import com.JSCode.gestion_de_inventario.models.Imagenes;
-import com.JSCode.gestion_de_inventario.models.Productos;
-import com.JSCode.gestion_de_inventario.repositories.CategoriaRepository;
-import com.JSCode.gestion_de_inventario.repositories.ProductoRepository;
-import com.JSCode.gestion_de_inventario.services.ProductoService;
+import com.JSCode.gestion_de_inventario.exception.ResourceNotFoundException;
+import com.JSCode.gestion_de_inventario.model.Categoria;
+import com.JSCode.gestion_de_inventario.model.Imagenes;
+import com.JSCode.gestion_de_inventario.model.Productos;
+import com.JSCode.gestion_de_inventario.repository.CategoriaRepository;
+import com.JSCode.gestion_de_inventario.repository.ProductoRepository;
+import com.JSCode.gestion_de_inventario.service.ProductoService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
